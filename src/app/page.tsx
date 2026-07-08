@@ -4,22 +4,11 @@ import { useEffect } from 'react'
 import { AppShell } from '@/components/layout/app-shell'
 import { useRouterStore } from '@/stores/router-store'
 import { useAuthStore } from '@/stores/auth-store'
+import { HomePage } from '@/components/home/home-page'
 import { EmptyState } from '@/components/shared/empty-state'
 import { LoadingSpinner } from '@/components/shared/loading-spinner'
 import { AuthGuard } from '@/components/auth/auth-guard'
 import { Film } from 'lucide-react'
-
-function HomePage() {
-  return (
-    <div className="p-4 sm:p-6">
-      <EmptyState
-        icon={<Film className="h-10 w-10 text-muted-foreground" />}
-        title="Welcome to ViewTube"
-        description="Video browsing will be available in the next phase. Sign in to get started with your account."
-      />
-    </div>
-  )
-}
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
