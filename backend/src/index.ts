@@ -15,6 +15,9 @@ app.use(cors({
 
 app.use(express.json());
 
+import apiRoutes from './routes';
+app.use('/api', apiRoutes);
+
 // Basic health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running' });
