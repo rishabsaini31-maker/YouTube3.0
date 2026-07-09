@@ -28,12 +28,7 @@ export function AppShell({ children }: AppShellProps) {
             isCollapsed ? 'md:ml-0' : 'md:ml-0'
           )}
         >
-          <div className={cn(isMobileOpen && 'md:hidden')}>
-            {children}
-          </div>
-          <div className={cn(!isMobileOpen || 'hidden md:block')}>
-            {children}
-          </div>
+          {children}
         </main>
       </div>
       <AuthModal />

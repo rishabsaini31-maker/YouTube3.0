@@ -46,12 +46,12 @@ export function CommentSection({ videoId }: CommentSectionProps) {
         const res = await commentService.getComments(videoId, pageNum)
         if (res.data) {
           if (reset) {
-            setComments(res.data.data)
+            setComments(res.data)
           } else {
-            setComments((prev) => [...prev, ...res.data.data])
+            setComments((prev) => [...prev, ...res.data])
           }
-          setTotal(res.data.total)
-          setHasMore(res.data.hasMore)
+          setTotal(res.total)
+          setHasMore(res.hasMore)
           setPage(pageNum)
         }
       } catch {

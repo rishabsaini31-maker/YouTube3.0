@@ -5,36 +5,17 @@ import { AppShell } from '@/components/layout/app-shell'
 import { useRouterStore } from '@/stores/router-store'
 import { useAuthStore } from '@/stores/auth-store'
 import { HomePage } from '@/components/home/home-page'
-import { EmptyState } from '@/components/shared/empty-state'
+import { VideoPlayerPage } from '@/components/video/video-player-page'
+import { ChannelPage } from '@/components/channel/channel-page'
+import { SearchPage } from '@/components/search/search-page'
+import { UploadModal } from '@/components/upload/upload-modal'
+import { HistoryPage } from '@/components/history/history-page'
+import { WatchLaterPage } from '@/components/watch-later-page/watch-later-page'
+import { LikedVideosPage } from '@/components/liked-videos/liked-videos-page'
+import { SubscriptionsPage } from '@/components/subscriptions/subscriptions-page'
+import { YourVideosPage } from '@/components/your-videos/your-videos-page'
+import { SettingsPage } from '@/components/settings/settings-page'
 import { LoadingSpinner } from '@/components/shared/loading-spinner'
-import { AuthGuard } from '@/components/auth/auth-guard'
-import { Film } from 'lucide-react'
-
-function PlaceholderPage({ title }: { title: string }) {
-  return (
-    <div className="p-4 sm:p-6">
-      <EmptyState
-        icon={<Film className="h-10 w-10 text-muted-foreground" />}
-        title={title}
-        description="This section is coming in the next phase."
-      />
-    </div>
-  )
-}
-
-function ProtectedPlaceholder({ title }: { title: string }) {
-  return (
-    <AuthGuard>
-      <div className="p-4 sm:p-6">
-        <EmptyState
-          icon={<Film className="h-10 w-10 text-muted-foreground" />}
-          title={title}
-          description="This section is coming in the next phase."
-        />
-      </div>
-    </AuthGuard>
-  )
-}
 
 function MainContent() {
   const { currentView, initFromHash } = useRouterStore()
@@ -47,27 +28,25 @@ function MainContent() {
     case 'home':
       return <HomePage />
     case 'video':
-      return <PlaceholderPage title="Video Player" />
+      return <VideoPlayerPage />
     case 'channel':
-      return <PlaceholderPage title="Channel Page" />
+      return <ChannelPage />
     case 'search':
-      return <PlaceholderPage title={`Search: "${currentView.params?.query || ''}"`} />
+      return <SearchPage />
     case 'upload':
-      return <ProtectedPlaceholder title="Upload Video" />
+      return <UploadModal />
     case 'history':
-      return <ProtectedPlaceholder title="Watch History" />
+      return <HistoryPage />
     case 'watch-later':
-      return <ProtectedPlaceholder title="Watch Later" />
+      return <WatchLaterPage />
     case 'liked-videos':
-      return <ProtectedPlaceholder title="Liked Videos" />
+      return <LikedVideosPage />
     case 'subscriptions':
-      return <ProtectedPlaceholder title="Subscriptions" />
+      return <SubscriptionsPage />
     case 'settings':
-      return <ProtectedPlaceholder title="Settings" />
+      return <SettingsPage />
     case 'your-videos':
-      return <ProtectedPlaceholder title="Your Videos" />
-    case 'profile':
-      return <PlaceholderPage title="Profile" />
+      return <YourVideosPage />
     default:
       return <HomePage />
   }

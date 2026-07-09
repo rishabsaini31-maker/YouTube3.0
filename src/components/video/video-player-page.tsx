@@ -86,16 +86,6 @@ export function VideoPlayerPage() {
     }
   }
 
-  const handleLikeDislike = (reaction: 'LIKE' | 'DISLIKE', newLikeCount: number, newDislikeCount: number, newReaction: 'LIKE' | 'DISLIKE' | null) => {
-    if (!isAuthenticated) {
-      openLogin()
-      return
-    }
-    setLikeCount(newLikeCount)
-    setDislikeCount(newDislikeCount)
-    setUserReaction(newReaction)
-  }
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -168,8 +158,6 @@ export function VideoPlayerPage() {
             likeCount={likeCount}
             dislikeCount={dislikeCount}
             initialReaction={userReaction}
-            channelId={channel?.id || ''}
-            profileId={user?.profileId || ''}
           />
         </div>
 

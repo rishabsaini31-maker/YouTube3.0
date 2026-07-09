@@ -9,9 +9,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuthStore } from '@/stores/auth-store'
-import { api } from '@/services/api'
-import { ApiError } from '@/services/api'
 import { toast } from 'sonner'
+import { signIn } from 'next-auth/react'
 import { Eye, EyeOff, Loader2, LogIn } from 'lucide-react'
 import Link from 'next/link'
 
@@ -38,31 +37,22 @@ export function LoginForm() {
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true)
     try {
-      const res = await api.post<{ url?: string; error?: string }>('/api/auth/signin', {
+      const result = await signIn('credentials', {
         email: data.email,
         password: data.password,
-        callbackUrl: '/',
         redirect: false,
       })
 
-      if (res.error) {
-        toast.error(res.error)
+      if (result?.error) {
+        toast.error(result.error === 'CredentialsSignin' ? 'Invalid email or password' : 'Sign in failed')
         return
       }
 
-      if (res.url) {
-        window.location.href = res.url
-      } else {
-        await fetchSession()
-        closeAuthModals()
-        toast.success('Welcome back!')
-      }
-    } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message)
-      } else {
-        toast.error('Failed to sign in. Please try again.')
-      }
+      await fetchSession()
+      closeAuthModals()
+      toast.success('Welcome back!')
+    } catch {
+      toast.error('Failed to sign in. Please try again.')
     } finally {
       setIsLoading(false)
     }

@@ -98,3 +98,111 @@ Stage Summary:
 - Share: clipboard copy with toast notification
 - Suggested videos: intelligent 3-tier fetch strategy (channel → category → popular), deduplication, scrollable with custom scrollbar
 - Zero ESLint errors across all 3 files
+
+---
+Task ID: 3
+Agent: Channel Page Builder
+Task: Create Channel API + Channel Page component
+
+Work Log:
+- Created /api/channels/[id]/route.ts GET endpoint with channel info, isSubscribed check, and tab=videos paginated response
+- Created channel-page.tsx component with full channel header (banner, avatar, name, handle, stats, subscribe button)
+- Implemented Videos tab with responsive 4-column grid, infinite scroll, skeleton loading, empty/error states
+- Implemented About tab with description, stats (video count, join date), and links section
+- Added Subscribe/Unsubscribe button with optimistic local state update, loading spinner, auth guard (opens login modal)
+- Created ChannelPageSkeleton component for initial loading state matching full layout
+- Updated page.tsx SPA router to render ChannelPage for 'channel' view instead of placeholder
+- Used existing services: subscriptionService.toggleSubscribe, videoService.getVideos, api client
+- Used existing components: VideoCard, VideoCardSkeletonRow, ErrorState, EmptyState, LoadingSpinner
+- Used shadcn/ui: Avatar, Button, Skeleton, Separator, Tabs/TabsList/TabsTrigger/TabsContent
+- Responsive design: mobile-first with sm/md/lg/xl breakpoints, banner aspect ratios, avatar sizes
+- Zero ESLint errors, successful compilation
+
+Stage Summary:
+- Channel page with gradient placeholder banner, avatar, name, @handle, subscriber count, video count
+- Subscribe/Unsubscribe button with auth-aware behavior and toast notifications
+- Tabs navigation: Videos (grid + infinite scroll) and About (description, stats, join date)
+- API supports channel info retrieval with isSubscribed for authenticated users
+- Clean loading skeleton matching full channel page layout
+
+---
+Task ID: 4
+Agent: Search Page Builder
+Task: Create Search API + Search Page component
+
+Work Log:
+- Created /api/search/route.ts GET endpoint with query, page, pageSize, and filter params
+- Search API uses 3-priority video search: title matches first, then tags, then description (deduplicated)
+- Channel search by name and handle with OR conditions
+- API supports filter param (all/videos/channels) for tab-specific pagination
+- Returns totalVideos, totalChannels, and merged total counts
+- Parses JSON tags field from database strings into arrays
+- Created search-page.tsx component reading query from useRouterStore().currentView.params?.query
+- Implemented filter tabs: All, Videos, Channels with count badges using shadcn Tabs
+- Video results displayed as horizontal VideoCard list (variant="horizontal")
+- Channel results as custom ChannelResultCard with avatar, name, @handle, subscriber count, subscribe button
+- Subscribe button uses subscriptionService with optimistic local state, auth guard (opens login modal)
+- Debounced search (300ms) when query changes, resets to page 1 and "All" tab
+- Tab change triggers fresh API call with appropriate filter
+- Infinite scroll via IntersectionObserver with load-more sentinel element
+- Loading states: 8 horizontal skeletons for initial load, skeleton rows for load-more
+- Empty state with Search icon when no query, or filtered tab has no results
+- Error state with retry button
+- Result count badge next to query display
+- "You've seen all results" end indicator
+- Updated page.tsx to render SearchPage for 'search' view
+- Zero ESLint errors, successful compilation
+
+Stage Summary:
+- Search page with video/channel results, filter tabs (All/Videos/Channels)
+- Full-text search across titles, descriptions, tags with priority ordering (title > tags > description)
+- Channel search by name and handle
+- Infinite scroll with skeleton loading states
+- Responsive channel result cards with subscribe functionality
+
+---
+Task ID: 8-10
+Agent: Subscriptions & Settings Builder
+Task: Create Subscriptions, Your Videos, and Settings pages + APIs
+
+Work Log:
+- Created /api/subscriptions/channels/route.ts (GET) — returns subscribed channels with avatar fallback, subscriber count, subscribedAt
+- Created /api/subscriptions/videos/route.ts (GET) — returns latest videos from subscribed channels with pagination, channel include
+- Created /api/your-videos/route.ts (GET + DELETE) — GET returns current user's videos with sort (newest/popular/oldest) and pagination; DELETE removes video + cascades likes/comments/watchHistory/watchLater, decrements channel.videoCount, deletes thumbnail/video files
+- Created /api/profile/route.ts (GET + PUT + POST) — GET returns profile with channel; PUT updates name/username/bio + channel name/description, validates username uniqueness and format; POST handles avatar upload via FormData with file type/size validation, updates both profile and channel avatar
+- Created src/services/subscription-page-service.ts — getSubscribedChannels, getSubscriptionVideos
+- Created src/services/your-videos-service.ts — getYourVideos, deleteVideo
+- Created src/services/profile-service.ts — getProfile, updateProfile, uploadAvatar
+- Created subscriptions-page.tsx — two tabs (Latest/Channels) using shadcn Tabs; Latest tab shows video grid from subscribed channels with infinite scroll; Channels tab shows channel cards with avatar, subscriber count, unsubscribe button; skeleton loading for both tabs; empty/error states
+- Created your-videos-page.tsx — grid of video cards with stats (views, likes, comments, time ago); sort dropdown (newest/popular/oldest); delete button with AlertDialog confirmation; empty state with upload CTA; load-more button; skeleton loading
+- Created settings-page.tsx — avatar upload with preview and progress overlay; profile form (name, username with @prefix, bio with char counter, email disabled); channel settings (name, description) if user has channel; form validation (required fields, username format, lengths); change detection for save button; toast notifications; calls fetchSession after save/avatar upload to refresh auth store
+- Updated page.tsx SPA router to render SubscriptionsPage, SettingsPage, YourVideosPage replacing placeholders
+- Zero ESLint errors, successful compilation
+
+Stage Summary:
+- Subscriptions page with Latest feed (infinite scroll video grid) and Channels tab (unsubscribe cards)
+- Your Videos page with sort, stats overlay per card, delete with AlertDialog, load-more pagination
+- Settings page with avatar upload, profile/channel editing, form validation, session refresh after save
+---
+Task ID: 6
+Agent: Main
+Task: Fix all remaining bugs and verify all pages
+
+Work Log:
+- Fixed your-videos-page.tsx duplicate Video import (lucide-react vs @/types collision) - renamed to VideoIcon
+- Fixed profile API route using non-existent profile.channelId → changed to profile.channel?.id
+- Fixed profile PUT endpoint not returning channel data in response → re-fetch with channel include
+- Fixed comment-section.tsx accessing res.data.data when API returns flat PaginatedResponse → changed to res.data
+- Fixed channel API returning nested {channel, videos} response when channel page expects flat ApiResponse → simplified API to always return channel data
+- Added null-safety to formatViewCount and formatSubscriberCount (count ?? 0)
+- Fixed login form: NextAuth requires form-urlencoded body + CSRF token → switched to next-auth/react signIn() function
+- Fixed AppShell rendering children twice on desktop (broken mobile toggle logic) → simplified to single children render
+- Verified all 12 pages via browser automation: Home, Video Player, Channel (Videos+About), Search, Upload, History, Watch Later, Liked Videos, Subscriptions, Your Videos, Settings
+- Registered test user and verified auth-protected pages work correctly
+- Zero ESLint errors
+
+Stage Summary:
+- 8 bugs fixed across auth, API, UI components, and layout
+- All pages render correctly with proper data
+- Auth flow works: register → login → session persistence → auth-protected pages
+- Zero lint errors, clean dev server with no console errors
