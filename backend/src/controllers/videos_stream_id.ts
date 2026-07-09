@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { db } from '@/lib/db'
+import { db } from '../lib/db'
 import { existsSync, createReadStream, statSync } from 'fs'
 import path from 'path'
 

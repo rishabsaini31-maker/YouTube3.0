@@ -1,24 +1,10 @@
 ▲ Next.js 16.2.10 (Turbopack)
 - Local:         http://localhost:3000
 - Network:       http://10.79.16.64:3000
-- Environments: .env
-✓ Ready in 236ms
+- Environments: .env.local, .env
+✓ Ready in 225ms
 
- GET / 200 in 3.1s (next.js: 2.9s, application-code: 137ms)
-⨯ Error: @prisma/client did not initialize yet. Please run "prisma generate" and try to import it again.
-    at module evaluation (src/lib/db.ts:9:3)
-    at module evaluation (src/lib/auth.ts:3:1)
-    at module evaluation (src/app/api/auth/session/route.ts:3:1)
-    at Object.<anonymous> (.next/dev/server/app/api/auth/session/route.js:10:3)
-   7 | export const db =
-   8 |   globalForPrisma.prisma ??
->  9 |   new PrismaClient({
-     |   ^
-  10 |     log: ['query'],
-  11 |   })
-  12 | {
-  page: '/api/auth/session'
-}
- GET /api/auth/session 500 in 714ms (next.js: 668ms, application-code: 46ms)
-  Reload env: .env.local
- GET / 200 in 42ms (next.js: 29ms, application-code: 13ms)
+ GET / 200 in 247ms (next.js: 102ms, application-code: 145ms)
+[next-auth][warn][NEXTAUTH_URL] 
+https://next-auth.js.org/warnings#nextauth_url
+ GET /api/auth/session 200 in 81ms (next.js: 66ms, application-code: 15ms)

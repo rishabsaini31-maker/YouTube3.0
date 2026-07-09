@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
-import { db } from '@/lib/db'
+import { authOptions } from '../lib/auth'
+import { db } from '../lib/db'
 
 export async function GET() {
   try {

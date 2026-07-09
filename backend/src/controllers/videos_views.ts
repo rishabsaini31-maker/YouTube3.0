@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { db } from '@/lib/db'
+import { db } from '../lib/db'
 
 export const POST = async (req: Request, res: Response) => {
   try {

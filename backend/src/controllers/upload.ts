@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
-import { db } from '@/lib/db'
-import { saveFile } from '@/lib/storage'
+import { authOptions } from '../lib/auth'
+import { db } from '../lib/db'
+import { saveFile } from '../lib/storage'
 import path from 'path'
 import fs from 'fs/promises'
 

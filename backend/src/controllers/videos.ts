@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { db } from '@/lib/db'
-import { PAGINATION } from '@/types'
+import { db } from '../lib/db'
+import { PAGINATION } from '../types'
 
 export const GET = async (req: Request, res: Response) => {
   try {
