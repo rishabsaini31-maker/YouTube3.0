@@ -1,6 +1,4 @@
 import { Request, Response } from 'express';
-import { getServerSession } from 'next-auth'
-import { authOptions } from '../lib/auth'
 import { db } from '../lib/db'
 
 export const GET = async (req: Request, res: Response) => {
@@ -28,7 +26,7 @@ export const GET = async (req: Request, res: Response) => {
     const channelIds = subscriptions.map((s) => s.targetId)
 
     if (channelIds.length === 0) {
-      return res.status(500).json({
+      return res.status(200).json({
         data: [],
         total: 0,
         page,
@@ -100,6 +98,6 @@ export const GET = async (req: Request, res: Response) => {
     })
   } catch (error) {
     console.error('Subscription videos error:', error)
-    return res.json({ error: 'Failed to fetch subscription videos' })
+    return res.status(500).json({ error: 'Failed to fetch subscription videos' })
   }
 }

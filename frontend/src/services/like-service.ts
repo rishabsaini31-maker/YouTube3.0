@@ -9,6 +9,6 @@ interface LikeResponse {
 
 export const likeService = {
   async toggleLike(videoId: string, type: 'LIKE' | 'DISLIKE') {
-    return api.post<ApiResponse<LikeResponse>>('/api/likes', { videoId, type })
+    return api.post<ApiResponse<LikeResponse>>('/likes', { videoId, type })
   },
 }

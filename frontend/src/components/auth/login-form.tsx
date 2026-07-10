@@ -48,6 +48,9 @@ export function LoginForm() {
         return
       }
 
+      useAuthStore.getState().setUser(null)
+      localStorage.removeItem('auth-logout-called')
+      
       await fetchSession()
       closeAuthModals()
       toast.success('Welcome back!')

@@ -1,6 +1,4 @@
 import { Request, Response } from 'express';
-import { getServerSession } from 'next-auth'
-import { authOptions } from '../lib/auth'
 import { db } from '../lib/db'
 import { deleteFile } from '../lib/storage'
 
@@ -16,7 +14,7 @@ export const GET = async (req: Request, res: Response) => {
       include: { channel: true },
     })
     if (!profile?.channel) {
-      return res.status(500).json({
+      return res.status(200).json({
         data: [],
         total: 0,
         page: 1,
@@ -75,7 +73,7 @@ export const GET = async (req: Request, res: Response) => {
     })
   } catch (error) {
     console.error('Your videos error:', error)
-    return res.json({ error: 'Failed to fetch your videos' })
+    return res.status(500).json({ error: 'Failed to fetch your videos' })
   }
 }
 
@@ -128,9 +126,9 @@ export const DELETE = async (req: Request, res: Response) => {
       // Ignore file deletion errors
     }
 
-    return res.status(500).json({ data: { success: true } })
+    return res.status(200).json({ data: { success: true } })
   } catch (error) {
     console.error('Delete video error:', error)
-    return res.json({ error: 'Failed to delete video' })
+    return res.status(500).json({ error: 'Failed to delete video' })
   }
 }

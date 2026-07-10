@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react'
 import { useRouterStore } from '@/stores/router-store'
 import { uploadService } from '@/services/upload-service'
+import { useAuthStore } from '@/stores/auth-store'
 import { VIDEO_CATEGORIES } from '@/types'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -29,6 +30,7 @@ import { X, Upload, Film, ImageIcon, Loader2 } from 'lucide-react'
 
 export function UploadModal() {
   const { currentView, navigate } = useRouterStore()
+  const { user } = useAuthStore()
   const isOpen = currentView.name === 'upload'
 
   const [videoFile, setVideoFile] = useState<File | null>(null)
@@ -113,6 +115,7 @@ export function UploadModal() {
           description: description.trim(),
           category,
           tags,
+          userId: user?.userId || user?.id,
         },
         (percent) => setProgress(percent)
       )

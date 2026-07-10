@@ -3,19 +3,19 @@ import type { ApiResponse, PaginatedResponse } from '@/types'
 
 export const commentService = {
   async getComments(videoId: string, page = 1) {
-    return api.get<PaginatedResponse<CommentResponse>>('/api/comments', { videoId, page: String(page) })
+    return api.get<PaginatedResponse<CommentResponse>>('/comments', { videoId, page: String(page) })
   },
 
   async addComment(videoId: string, content: string, parentId?: string) {
-    return api.post<ApiResponse<CommentResponse>>('/api/comments', { videoId, content, parentId })
+    return api.post<ApiResponse<CommentResponse>>('/comments', { videoId, content, parentId })
   },
 
   async updateComment(commentId: string, content: string) {
-    return api.put<ApiResponse<{ content: string; isEdited: boolean; updatedAt: string }>>(`/api/comments/${commentId}`, { content })
+    return api.put<ApiResponse<{ content: string; isEdited: boolean; updatedAt: string }>>(`/comments/${commentId}`, { content })
   },
 
   async deleteComment(commentId: string) {
-    return api.delete<ApiResponse>(`/api/comments/${commentId}`)
+    return api.delete<ApiResponse>(`/comments/${commentId}`)
   },
 }
 

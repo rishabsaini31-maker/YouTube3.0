@@ -1,6 +1,4 @@
 import { Request, Response } from 'express';
-import { getServerSession } from 'next-auth'
-import { authOptions } from '../lib/auth'
 import { db } from '../lib/db'
 
 export const POST = async (req: Request, res: Response) => {
@@ -41,7 +39,7 @@ export const POST = async (req: Request, res: Response) => {
         where: { id: channelId },
         data: { subscriberCount: { decrement: 1 } },
       })
-      return res.status(500).json({ data: { subscribed: false, subscriberCount: channel.subscriberCount - 1 } })
+      return res.status(200).json({ data: { subscribed: false, subscriberCount: channel.subscriberCount - 1 } })
     } else {
       await db.subscription.create({
         data: { subscriberId: profile.id, targetId: channelId },
@@ -54,7 +52,7 @@ export const POST = async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.error('Subscription error:', error)
-    return res.json({ error: 'Failed to process subscription' })
+    return res.status(500).json({ error: 'Failed to process subscription' })
   }
 }
 
@@ -62,7 +60,7 @@ export const GET = async (req: Request, res: Response) => {
   try {
     const session = { user: (req as any).user };
     if (!session?.user?.id) {
-      return res.status(500).json({ data: { subscribed: false } })
+      return res.status(200).json({ data: { subscribed: false } })
     }
 
     
@@ -84,6 +82,6 @@ export const GET = async (req: Request, res: Response) => {
     return res.json({ data: { subscribed: !!sub } })
   } catch (error) {
     console.error('Subscription check error:', error)
-    return res.json({ error: 'Failed to check subscription' })
+    return res.status(500).json({ error: 'Failed to check subscription' })
   }
 }

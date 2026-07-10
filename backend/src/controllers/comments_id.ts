@@ -1,6 +1,4 @@
 import { Request, Response } from 'express';
-import { getServerSession } from 'next-auth'
-import { authOptions } from '../lib/auth'
 import { db } from '../lib/db'
 
 export const PUT = async (req: Request, res: Response) => {
@@ -10,7 +8,7 @@ export const PUT = async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Authentication required' })
     }
 
-    const { id } = await params
+    const { id } = req.params
     const body = req.body
     const { content } = body
 
@@ -37,7 +35,7 @@ export const PUT = async (req: Request, res: Response) => {
       data: { content: content.trim(), isEdited: true },
     })
 
-    return res.status(500).json({
+    return res.status(200).json({
       data: {
         id: updated.id,
         content: updated.content,
@@ -48,7 +46,7 @@ export const PUT = async (req: Request, res: Response) => {
     })
   } catch (error) {
     console.error('Comment update error:', error)
-    return res.json({ error: 'Failed to update comment' })
+    return res.status(500).json({ error: 'Failed to update comment' })
   }
 }
 
@@ -59,7 +57,7 @@ export const DELETE = async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Authentication required' })
     }
 
-    const { id } = await params
+    const { id } = req.params
 
     const profile = await db.profile.findUnique({ where: { userId: session.user.id! } })
     if (!profile) {
@@ -88,9 +86,9 @@ export const DELETE = async (req: Request, res: Response) => {
       data: { commentCount: { decrement: replyCount } },
     })
 
-    return res.status(500).json({ message: 'Comment deleted' })
+    return res.status(200).json({ message: 'Comment deleted' })
   } catch (error) {
     console.error('Comment delete error:', error)
-    return res.json({ error: 'Failed to delete comment' })
+    return res.status(500).json({ error: 'Failed to delete comment' })
   }
 }

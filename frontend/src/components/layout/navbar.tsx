@@ -224,7 +224,7 @@ export function Navbar() {
         </TooltipProvider>
       </form>
 
-      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 ml-auto">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -250,10 +250,11 @@ export function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-10 w-10 rounded-full"
+                className="h-10 w-10 rounded-full relative"
                 aria-label="Notifications"
               >
                 <Bell className="h-5 w-5" />
+                <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full" />
               </Button>
             </TooltipTrigger>
             <TooltipContent side="bottom">

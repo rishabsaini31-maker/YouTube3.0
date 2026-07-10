@@ -1,10 +1,10 @@
 ▲ Next.js 16.2.10 (Turbopack)
 - Local:         http://localhost:3000
-- Network:       http://10.79.16.64:3000
+- Network:       http://10.123.254.159:3000
 - Environments: .env.local, .env
-✓ Ready in 225ms
+✓ Ready in 263ms
 
- GET / 200 in 247ms (next.js: 102ms, application-code: 145ms)
-[next-auth][warn][NEXTAUTH_URL] 
-https://next-auth.js.org/warnings#nextauth_url
- GET /api/auth/session 200 in 81ms (next.js: 66ms, application-code: 15ms)
+ GET / 200 in 222ms (next.js: 81ms, application-code: 142ms)
+prisma:query SELECT "public"."Profile"."id", "public"."Profile"."userId", "public"."Profile"."name", "public"."Profile"."username", "public"."Profile"."email", "public"."Profile"."avatarUrl", "public"."Profile"."bannerUrl", "public"."Profile"."bio", "public"."Profile"."createdAt", "public"."Profile"."updatedAt" FROM "public"."Profile" WHERE ("public"."Profile"."userId" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."Channel"."id", "public"."Channel"."profileId", "public"."Channel"."name", "public"."Channel"."handle", "public"."Channel"."description", "public"."Channel"."avatarUrl", "public"."Channel"."bannerUrl", "public"."Channel"."subscriberCount", "public"."Channel"."videoCount", "public"."Channel"."createdAt", "public"."Channel"."updatedAt" FROM "public"."Channel" WHERE "public"."Channel"."profileId" IN ($1) OFFSET $2
+ GET /api/auth/session 200 in 2.1s (next.js: 66ms, application-code: 2.0s)

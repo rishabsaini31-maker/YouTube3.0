@@ -10,6 +10,7 @@ export const uploadService = {
       description: string
       category: string
       tags: string[]
+      userId?: string
     },
     onProgress?: (percent: number) => void
   ) {
@@ -21,6 +22,6 @@ export const uploadService = {
     formData.append('category', data.category)
     formData.append('tags', JSON.stringify(data.tags))
 
-    return api.upload<ApiResponse<{ id: string; title: string }>>('/api/upload', formData, onProgress)
+    return api.upload<ApiResponse<{ id: string; title: string }>>('/upload', formData, onProgress, data.userId)
   },
 }

@@ -1,11 +1,9 @@
 import { Request, Response } from 'express';
-import { getServerSession } from 'next-auth'
-import { authOptions } from '../lib/auth'
 import { db } from '../lib/db'
 
 export const GET = async (req: Request, res: Response) => {
   try {
-    const { id } = await params
+    const { id } = req.params
 
     const channel = await db.channel.findUnique({
       where: { id },
@@ -57,9 +55,9 @@ export const GET = async (req: Request, res: Response) => {
       isSubscribed,
     }
 
-    return res.status(500).json({ data: channelData })
+    return res.status(200).json({ data: channelData })
   } catch (error) {
     console.error('Channel fetch error:', error)
-    return res.json({ error: 'Failed to fetch channel' })
+    return res.status(500).json({ error: 'Failed to fetch channel' })
   }
 }

@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
-import { getServerSession } from 'next-auth'
-import { authOptions } from '../lib/auth'
 import { db } from '../lib/db'
 
-export async function GET() {
+export const GET = async (req: Request, res: Response) => {
   try {
     const session = { user: (req as any).user };
     if (!session?.user?.id) {
@@ -45,9 +43,9 @@ export async function GET() {
       }
     })
 
-    return res.status(500).json({ data: channels })
+    return res.status(200).json({ data: channels })
   } catch (error) {
     console.error('Subscribed channels error:', error)
-    return res.json({ error: 'Failed to fetch subscribed channels' })
+    return res.status(500).json({ error: 'Failed to fetch subscribed channels' })
   }
 }

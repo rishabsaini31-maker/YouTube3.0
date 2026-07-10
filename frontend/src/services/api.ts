@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
 
 interface FetchOptions extends RequestInit {
   params?: Record<string, string>
@@ -6,9 +6,11 @@ interface FetchOptions extends RequestInit {
 
 class ApiClient {
   private baseUrl: string
+  private getUserId: () => string | undefined
 
-  constructor(baseUrl: string) {
+  constructor(baseUrl: string, getUserId: () => string | undefined = () => undefined) {
     this.baseUrl = baseUrl
+    this.getUserId = getUserId
   }
 
   private async request<T>(endpoint: string, options: FetchOptions = {}): Promise<T> {
@@ -33,9 +35,15 @@ class ApiClient {
       ...(options.headers as Record<string, string>),
     }
 
+    const userId = this.getUserId()
+    if (userId) {
+      headers['x-user-id'] = userId
+    }
+
     const response = await fetch(url, {
       ...fetchOptions,
       headers,
+      credentials: 'include',
     })
 
     const data = await response.json()
@@ -75,9 +83,11 @@ class ApiClient {
   async upload<T>(
     endpoint: string,
     formData: FormData,
-    onProgress?: (percent: number) => void
+    onProgress?: (percent: number) => void,
+    overrideUserId?: string
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`
+    const userId = overrideUserId || this.getUserId()
 
     return new Promise<T>((resolve, reject) => {
       const xhr = new XMLHttpRequest()
@@ -106,6 +116,10 @@ class ApiClient {
       })
 
       xhr.open('POST', url)
+      if (userId) {
+        xhr.setRequestHeader('x-user-id', userId)
+      }
+      xhr.withCredentials = true
       xhr.send(formData)
     })
   }
@@ -123,4 +137,17 @@ export class ApiError extends Error {
   }
 }
 
-export const api = new ApiClient(BASE_URL)
+export const api = new ApiClient(BASE_URL, () => {
+  if (typeof window !== 'undefined') {
+    const user = localStorage.getItem('auth-user')
+    if (user) {
+      try {
+        const parsed = JSON.parse(user)
+        return parsed.userId || parsed.id
+      } catch {
+        return undefined
+      }
+    }
+  }
+  return undefined
+})

@@ -10,14 +10,14 @@ interface HistoryEntry {
 
 export const historyService = {
   async list() {
-    return api.get<ApiResponse<HistoryEntry[]>>('/api/history')
+    return api.get<ApiResponse<HistoryEntry[]>>('/history')
   },
 
   async record(videoId: string) {
-    return api.post<ApiResponse>('/api/history', { videoId })
+    return api.post<ApiResponse>('/history', { videoId })
   },
 
   async clear() {
-    return api.delete<ApiResponse>('/api/history')
+    return api.delete<ApiResponse>('/history')
   },
 }
