@@ -9,10 +9,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuthStore } from '@/stores/auth-store'
+import { sessionService } from '@/services/session-service'
+import { getDeviceInfo } from '@/lib/device-info'
 import { toast } from 'sonner'
 import { signIn } from 'next-auth/react'
 import { Eye, EyeOff, Loader2, LogIn } from 'lucide-react'
-import Link from 'next/link'
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email'),
@@ -24,7 +25,7 @@ type LoginFormData = z.infer<typeof loginSchema>
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const { closeAuthModals, openRegister, fetchSession } = useAuthStore()
+  const { closeAuthModals, openRegister, fetchSession, setPendingOtp } = useAuthStore()
 
   const {
     register,
@@ -48,10 +49,28 @@ export function LoginForm() {
         return
       }
 
-      useAuthStore.getState().setUser(null)
-      localStorage.removeItem('auth-logout-called')
-      
       await fetchSession()
+
+      // Track session with device info
+      try {
+        const deviceInfo = getDeviceInfo()
+        const sessionRes = await sessionService.createSession(deviceInfo)
+        const sessionData = (sessionRes as { data: { sessionId: string; isNewDevice: boolean; requiresOtp: boolean } }).data
+
+        if (sessionData.requiresOtp) {
+          setPendingOtp({
+            sessionId: sessionData.sessionId,
+            device: deviceInfo.device,
+            browser: deviceInfo.browser,
+            os: deviceInfo.os,
+          })
+          toast.info('New device detected. Please verify your identity.')
+          return
+        }
+      } catch {
+        // Session tracking is non-blocking, don't fail login if it fails
+      }
+
       closeAuthModals()
       toast.success('Welcome back!')
     } catch {

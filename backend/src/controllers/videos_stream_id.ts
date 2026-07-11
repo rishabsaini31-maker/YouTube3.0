@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { db } from '../lib/db'
+import { db } from '@/lib/db'
 import { existsSync, createReadStream, statSync } from 'fs'
 import path from 'path'
 
 export const GET = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params
+    const { id } = await params
 
     const video = await db.video.findUnique({
       where: { id },
@@ -28,7 +28,7 @@ export const GET = async (req: Request, res: Response) => {
 
     const stat = statSync(filePath)
     const fileSize = stat.size
-    const range = req.headers['range']
+    const range = request.headers.get('range')
 
     if (range) {
       const parts = range.replace(/bytes=/, '').split('-')
@@ -37,31 +37,46 @@ export const GET = async (req: Request, res: Response) => {
       const chunkSize = end - start + 1
 
       const file = createReadStream(filePath, { start, end })
-
-      res.writeHead(206, {
-        'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-        'Accept-Ranges': 'bytes',
-        'Content-Length': String(chunkSize),
-        'Content-Type': 'video/mp4',
-        'Cache-Control': 'public, max-age=31536000, immutable',
+      const readableStream = new ReadableStream({
+        start(controller) {
+          file.on('data', (chunk) => controller.enqueue(new Uint8Array(chunk)))
+          file.on('end', () => controller.close())
+          file.on('error', (err) => controller.error(err))
+        },
       })
 
-      file.pipe(res)
-    } else {
-      res.writeHead(200, {
+      return new Response(readableStream, {
+        status: 206,
+        headers: {
+          'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+          'Accept-Ranges': 'bytes',
+          'Content-Length': String(chunkSize),
+          'Content-Type': 'video/mp4',
+          'Cache-Control': 'public, max-age=31536000, immutable',
+        },
+      })
+    }
+
+    const file = createReadStream(filePath)
+    const readableStream = new ReadableStream({
+      start(controller) {
+        file.on('data', (chunk) => controller.enqueue(new Uint8Array(chunk)))
+        file.on('end', () => controller.close())
+        file.on('error', (err) => controller.error(err))
+      },
+    })
+
+    return new Response(readableStream, {
+      status: 200,
+      headers: {
         'Content-Length': String(fileSize),
         'Content-Type': 'video/mp4',
         'Accept-Ranges': 'bytes',
         'Cache-Control': 'public, max-age=31536000, immutable',
-      })
-
-      const file = createReadStream(filePath)
-      file.pipe(res)
-    }
+      },
+    })
   } catch (error) {
     console.error('Stream error:', error)
-    if (!res.headersSent) {
-      return res.status(500).json({ error: 'Failed to stream video' })
-    }
+    return res.status(500).json({ error: 'Failed to stream video' })
   }
 }

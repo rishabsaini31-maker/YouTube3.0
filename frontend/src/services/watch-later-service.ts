@@ -10,14 +10,14 @@ interface WatchLaterEntry {
 
 export const watchLaterService = {
   async list() {
-    return api.get<ApiResponse<WatchLaterEntry[]>>('/watch-later')
+    return api.get<ApiResponse<WatchLaterEntry[]>>('/api/watch-later')
   },
 
   async add(videoId: string) {
-    return api.post<ApiResponse>('/watch-later', { videoId })
+    return api.post<ApiResponse>('/api/watch-later', { videoId })
   },
 
   async remove(entryId: string) {
-    return api.delete<ApiResponse>(`/watch-later/${entryId}`)
+    return api.delete<ApiResponse>(`/api/watch-later/${entryId}`)
   },
 }

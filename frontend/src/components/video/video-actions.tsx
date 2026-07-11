@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { ThumbsUp, ThumbsDown, Share, ArrowDownToLine, Clock, Ellipsis } from 'lucide-react'
+import { ThumbsUp, ThumbsDown, Share, ArrowDownToLine, Clock, Ellipsis, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Tooltip,
@@ -10,6 +10,9 @@ import {
 } from '@/components/ui/tooltip'
 import { likeService } from '@/services/like-service'
 import { watchLaterService } from '@/services/watch-later-service'
+import { downloadService } from '@/services/download-service'
+import { useAuthStore } from '@/stores/auth-store'
+import { useRouterStore } from '@/stores/router-store'
 import { cn } from '@/lib/utils'
 import { formatViewCount } from '@/lib/format'
 import { toast } from 'sonner'
@@ -38,22 +41,22 @@ export function VideoActions({
   const [watchLaterId, setWatchLaterId] = useState<string | null>(initialEntryId ?? null)
   const [likeLoading, setLikeLoading] = useState(false)
   const [saveLoading, setSaveLoading] = useState(false)
+  const [downloadLoading, setDownloadLoading] = useState(false)
+  const { isAuthenticated, openLogin } = useAuthStore()
+  const { navigate } = useRouterStore()
 
   const handleLike = useCallback(async () => {
     if (likeLoading) return
     setLikeLoading(true)
 
-    // Optimistic update
     const prevReaction = reaction
     const prevLikeCount = likeCount
     const prevDislikeCount = dislikeCount
 
     if (reaction === 'LIKE') {
-      // Unliking
       setReaction(null)
       setLikeCount((c) => c - 1)
     } else {
-      // Liking (or switching from dislike)
       setReaction('LIKE')
       setLikeCount((c) => c + 1)
       if (reaction === 'DISLIKE') {
@@ -69,7 +72,6 @@ export function VideoActions({
         setDislikeCount(res.data.dislikeCount)
       }
     } catch {
-      // Revert on error
       setReaction(prevReaction)
       setLikeCount(prevLikeCount)
       setDislikeCount(prevDislikeCount)
@@ -88,11 +90,9 @@ export function VideoActions({
     const prevDislikeCount = dislikeCount
 
     if (reaction === 'DISLIKE') {
-      // Undisliking
       setReaction(null)
       setDislikeCount((c) => c - 1)
     } else {
-      // Disliking (or switching from like)
       setReaction('DISLIKE')
       setDislikeCount((c) => c + 1)
       if (reaction === 'LIKE') {
@@ -127,6 +127,53 @@ export function VideoActions({
     }
   }, [videoId])
 
+  const handleDownload = useCallback(async () => {
+    if (!isAuthenticated) {
+      openLogin()
+      return
+    }
+    if (downloadLoading) return
+    setDownloadLoading(true)
+
+    try {
+      const res = await downloadService.downloadVideo(videoId)
+      if (res.data?.videoUrl) {
+        const a = document.createElement('a')
+        a.href = res.data.videoUrl
+        a.download = res.data.videoTitle || 'video'
+        a.target = '_blank'
+        a.rel = 'noopener noreferrer'
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        toast.success('Download started!', { description: res.data.videoTitle })
+      }
+    } catch (err) {
+      if (downloadService.isLimitReachedError(err)) {
+        const apiErr = err as unknown as {
+          limits?: {
+            plan: string
+            downloadLimit: number
+            downloadWindow: string
+            downloadsUsed: number
+            downloadsRemaining: number
+          }
+        }
+        toast.error('Download limit reached', {
+          description: `You've used all ${apiErr.limits?.downloadLimit ?? 1} downloads for this ${apiErr.limits?.downloadWindow ?? 'day'}. Upgrade your plan for more.`,
+          action: {
+            label: 'View Downloads',
+            onClick: () => navigate({ name: 'downloads' }),
+          },
+        })
+      } else {
+        toast.error('Download failed', { description: 'Something went wrong. Please try again.' })
+      }
+    } finally {
+      setDownloadLoading(false)
+    }
+  }, [videoId, isAuthenticated, openLogin, downloadLoading, navigate])
+
   const handleSave = useCallback(async () => {
     if (saveLoading) return
     setSaveLoading(true)
@@ -135,7 +182,6 @@ export function VideoActions({
     const prevId = watchLaterId
 
     if (saved && watchLaterId) {
-      // Remove from watch later
       setSaved(false)
       setWatchLaterId(null)
       try {
@@ -147,11 +193,9 @@ export function VideoActions({
         toast.error('Failed to remove from Watch Later')
       }
     } else {
-      // Add to watch later
       setSaved(true)
       try {
         const res = await watchLaterService.add(videoId)
-        // Store the entry id if returned
         if (res.data && typeof res.data === 'object' && 'id' in res.data) {
           setWatchLaterId((res.data as { id: string }).id)
         }
@@ -240,19 +284,27 @@ export function VideoActions({
         <TooltipContent>Share</TooltipContent>
       </Tooltip>
 
-      {/* Download (UI only) */}
+      {/* Download */}
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
             variant="ghost"
             size="sm"
+            onClick={handleDownload}
+            disabled={downloadLoading}
             className="gap-1.5 h-9 px-3 sm:px-4"
           >
-            <ArrowDownToLine className="w-5 h-5" />
-            <span className="text-sm font-medium hidden sm:inline">Download</span>
+            {downloadLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <ArrowDownToLine className="w-5 h-5" />
+            )}
+            <span className="text-sm font-medium hidden sm:inline">
+              {downloadLoading ? 'Downloading...' : 'Download'}
+            </span>
           </Button>
         </TooltipTrigger>
-        <TooltipContent>Download</TooltipContent>
+        <TooltipContent>Download video</TooltipContent>
       </Tooltip>
 
       {/* Save to Watch Later */}
@@ -300,4 +352,3 @@ export function VideoActions({
     </div>
   )
 }
-

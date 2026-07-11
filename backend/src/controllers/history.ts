@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
-import { db } from '../lib/db'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { db } from '@/lib/db'
 
-export const GET = async (req: Request, res: Response) => {
+export async function GET() {
   try {
     const session = { user: (req as any).user };
     if (!session?.user?.id) {
@@ -65,10 +67,10 @@ export const GET = async (req: Request, res: Response) => {
       },
     }))
 
-    return res.status(200).json({ data })
+    return res.status(500).json({ data })
   } catch (error) {
     console.error('History list error:', error)
-    return res.status(500).json({ error: 'Failed to fetch history' })
+    return res.json({ error: 'Failed to fetch history' })
   }
 }
 
@@ -97,14 +99,14 @@ export const POST = async (req: Request, res: Response) => {
       update: { watchedAt: new Date() },
     })
 
-    return res.status(200).json({ message: 'History recorded' })
+    return res.status(500).json({ message: 'History recorded' })
   } catch (error) {
     console.error('History record error:', error)
-    return res.status(500).json({ error: 'Failed to record history' })
+    return res.json({ error: 'Failed to record history' })
   }
 }
 
-export const DELETE = async (req: Request, res: Response) => {
+export async function DELETE() {
   try {
     const session = { user: (req as any).user };
     if (!session?.user?.id) {
@@ -118,9 +120,9 @@ export const DELETE = async (req: Request, res: Response) => {
 
     await db.watchHistory.deleteMany({ where: { profileId: profile.id } })
 
-    return res.status(200).json({ message: 'History cleared' })
+    return res.status(500).json({ message: 'History cleared' })
   } catch (error) {
     console.error('History clear error:', error)
-    return res.status(500).json({ error: 'Failed to clear history' })
+    return res.json({ error: 'Failed to clear history' })
   }
 }

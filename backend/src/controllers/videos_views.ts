@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { db } from '../lib/db'
+import { db } from '@/lib/db'
 
 export const POST = async (req: Request, res: Response) => {
   try {
@@ -25,7 +25,7 @@ export const POST = async (req: Request, res: Response) => {
     })
 
     if (existingView) {
-      return res.status(200).json({ message: 'Already viewed today' })
+      return res.status(500).json({ message: 'Already viewed today' })
     }
 
     await db.$transaction([
@@ -41,6 +41,6 @@ export const POST = async (req: Request, res: Response) => {
     return res.json({ message: 'View recorded' })
   } catch (error) {
     console.error('View increment error:', error)
-    return res.status(500).json({ error: 'Failed to record view' })
+    return res.json({ error: 'Failed to record view' })
   }
 }

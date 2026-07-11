@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
-import { db } from '../lib/db'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { db } from '@/lib/db'
 
 export const POST = async (req: Request, res: Response) => {
   try {
@@ -42,7 +44,7 @@ export const POST = async (req: Request, res: Response) => {
           where: { id: videoId },
           data: { [field]: { decrement: 1 } },
         })
-        return res.status(200).json({ data: { reaction: null, likeCount: video[field] - 1, dislikeCount: video[type === 'LIKE' ? 'dislikeCount' : 'likeCount'] } })
+        return res.status(500).json({ data: { reaction: null, likeCount: video[field] - 1, dislikeCount: video[type === 'LIKE' ? 'dislikeCount' : 'likeCount'] } })
       } else {
         // Switch reaction
         const oldField = existing.type === 'LIKE' ? 'likeCount' : 'dislikeCount'
@@ -75,6 +77,6 @@ export const POST = async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.error('Like error:', error)
-    return res.status(500).json({ error: 'Failed to process reaction' })
+    return res.json({ error: 'Failed to process reaction' })
   }
 }

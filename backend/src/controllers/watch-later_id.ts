@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
-import { db } from '../lib/db'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { db } from '@/lib/db'
 
 export const DELETE = async (req: Request, res: Response) => {
   try {
@@ -8,7 +10,7 @@ export const DELETE = async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Authentication required' })
     }
 
-    const { id } = req.params
+    const { id } = await params
 
     const profile = await db.profile.findUnique({ where: { userId: session.user.id! } })
     if (!profile) {
@@ -22,9 +24,9 @@ export const DELETE = async (req: Request, res: Response) => {
 
     await db.watchLater.delete({ where: { id } })
 
-    return res.status(200).json({ message: 'Removed from watch later' })
+    return res.status(500).json({ message: 'Removed from watch later' })
   } catch (error) {
     console.error('Watch later remove error:', error)
-    return res.status(500).json({ error: 'Failed to remove' })
+    return res.json({ error: 'Failed to remove' })
   }
 }

@@ -3,10 +3,11 @@
 import { useAuthStore } from '@/stores/auth-store'
 import { LoginForm } from '@/components/auth/login-form'
 import { RegisterForm } from '@/components/auth/register-form'
+import { OtpVerificationModal } from '@/components/auth/otp-verification-modal'
 import { useEffect, useCallback } from 'react'
 
 export function AuthModal() {
-  const { isLoginOpen, isRegisterOpen, closeAuthModals } = useAuthStore()
+  const { isLoginOpen, isRegisterOpen, pendingOtp, closeAuthModals } = useAuthStore()
 
   const handleEscape = useCallback(
     (e: KeyboardEvent) => {
@@ -23,6 +24,10 @@ export function AuthModal() {
       return () => document.removeEventListener('keydown', handleEscape)
     }
   }, [isLoginOpen, isRegisterOpen, handleEscape])
+
+  if (pendingOtp) {
+    return <OtpVerificationModal />
+  }
 
   if (!isLoginOpen && !isRegisterOpen) return null
 

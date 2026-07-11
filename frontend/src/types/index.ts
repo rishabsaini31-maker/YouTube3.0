@@ -58,12 +58,17 @@ export interface Comment {
   parentId: string | null
   content: string
   likeCount: number
+  dislikeCount: number
   isEdited: boolean
+  isHidden: boolean
+  isPinned: boolean
+  isSpam: boolean
   createdAt: string
   updatedAt: string
   profile?: Profile
   replies?: Comment[]
   isLikedByUser?: boolean
+  isDislikedByUser?: boolean
 }
 
 export interface Like {
@@ -111,6 +116,10 @@ export type ViewName =
   | 'settings'
   | 'your-videos'
   | 'profile'
+  | 'watch-party'
+  | 'downloads'
+  | 'pricing'
+  | 'moderation'
 
 export interface ViewRoute {
   name: ViewName
@@ -184,4 +193,163 @@ export const PAGINATION = {
   videosPerPage: 20,
   commentsPerPage: 10,
   searchResultsPerPage: 20,
+  watchPartyPerPage: 12,
 } as const
+
+// ─── Watch Party ───────────────────────────────────────────────────────────────
+
+export interface WatchPartyRoom {
+  id: string
+  roomId: string
+  hostId: string
+  videoId: string
+  title: string
+  status: string
+  createdAt: string
+  updatedAt: string
+  host?: { id: string; name: string; username: string; avatarUrl: string | null } | null
+  video?: { id: string; title: string; thumbnailUrl: string; duration: number } | null
+  participants?: WatchPartyParticipant[]
+  participantCount?: number
+}
+
+export interface WatchPartyParticipant {
+  id: string
+  roomId: string
+  profileId: string
+  role: string
+  isOnline: boolean
+  joinedAt: string
+  profile?: { id: string; name: string; username: string; avatarUrl: string | null } | null
+}
+
+export interface WatchPartyMessage {
+  id: string
+  roomId: string
+  profileId: string
+  content: string
+  type: string
+  createdAt: string
+  profile?: { id: string; name: string; username: string; avatarUrl: string | null } | null
+}
+
+// Socket event participant (simplified, no socketId)
+// ─── Downloads ─────────────────────────────────────────────────────────────────
+
+export interface DownloadEntry {
+  id: string
+  videoId: string
+  videoTitle: string
+  channelName: string | null
+  thumbnailUrl: string
+  videoUrl: string
+  fileSize: number | null
+  quality: string
+  status: string
+  downloadedAt: string
+}
+
+export interface PlanInfo {
+  name: string
+  displayName: string
+  downloadLimit: number
+  downloadWindow: string
+  price: number
+  features: string[]
+}
+
+export interface DownloadLimits {
+  plan: PlanInfo
+  downloadsUsed: number
+  downloadsRemaining: number
+  isUnlimited: boolean
+  windowStart: string
+  windowEnd: string
+  windowResetLabel: string
+}
+
+// ─── Memberships & Payments ─────────────────────────────────────────────────
+
+export interface MembershipInfo {
+  id: string
+  planId: string
+  status: string
+  startedAt: string
+  expiresAt: string | null
+}
+
+export interface PaymentEntry {
+  id: string
+  planId: string
+  amount: number
+  currency: string
+  status: string
+  paidAt: string | null
+  createdAt: string
+}
+
+export interface MembershipData {
+  currentPlan: PlanInfo
+  membership: MembershipInfo | null
+  payments: PaymentEntry[]
+  paymentsTotal: number
+  paymentsPage: number
+  paymentsPageSize: number
+  paymentsHasMore: boolean
+}
+
+// ─── Comment Reports ──────────────────────────────────────────────────────
+
+export interface CommentReportInfo {
+  id: string
+  commentId: string
+  reporterId: string
+  reason: string
+  description: string | null
+  status: string
+  createdAt: string
+  reporter?: { id: string; name: string; username: string }
+}
+
+export interface ReportedComment extends Comment {
+  reports: CommentReportInfo[]
+  video?: { id: string; title: string }
+  channel?: { id: string; name: string }
+}
+
+// Socket event participant (simplified, no socketId)
+export interface WatchPartySocketParticipant {
+  profileId: string
+  username: string
+  avatarUrl: string | null
+  role: 'host' | 'member'
+  isMicOn: boolean
+  isCameraOn: boolean
+  isScreenSharing: boolean
+}
+
+// Socket chat message
+export interface WatchPartyChatMessage {
+  id: string
+  roomId: string
+  profileId: string
+  username: string
+  avatarUrl: string | null
+  content: string
+  type: string
+  createdAt: string
+}
+
+// ─── Login Sessions ──────────────────────────────────────────────────────
+
+export interface LoginSessionInfo {
+  id: string
+  device: string | null
+  browser: string | null
+  os: string | null
+  ip: string | null
+  location: string | null
+  isVerified: boolean
+  lastActive: string
+  createdAt: string
+}

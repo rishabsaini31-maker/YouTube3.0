@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
-import { db } from '../lib/db'
-import { saveFile } from '../lib/storage'
-import { UPLOAD_LIMITS } from '../types'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { db } from '@/lib/db'
+import { saveFile } from '@/lib/storage'
+import { UPLOAD_LIMITS } from '@/types'
 
-export const GET = async (req: Request, res: Response) => {
+export async function GET() {
   try {
     const session = { user: (req as any).user };
     if (!session?.user?.id) {
@@ -19,7 +21,7 @@ export const GET = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Profile not found' })
     }
 
-    return res.status(200).json({
+    return res.status(500).json({
       data: {
         id: profile.id,
         userId: profile.userId,
@@ -50,7 +52,7 @@ export const GET = async (req: Request, res: Response) => {
     })
   } catch (error) {
     console.error('Profile fetch error:', error)
-    return res.status(500).json({ error: 'Failed to fetch profile' })
+    return res.json({ error: 'Failed to fetch profile' })
   }
 }
 
@@ -115,12 +117,13 @@ export const PUT = async (req: Request, res: Response) => {
       }
     }
 
+    // Re-fetch with channel to return complete data
     const refreshedProfile = await db.profile.findUnique({
       where: { id: profile.id },
       include: { channel: true },
     })
 
-    return res.status(200).json({
+    return res.status(500).json({
       data: {
         id: refreshedProfile!.id,
         userId: refreshedProfile!.userId,
@@ -151,7 +154,7 @@ export const PUT = async (req: Request, res: Response) => {
     })
   } catch (error) {
     console.error('Profile update error:', error)
-    return res.status(500).json({ error: 'Failed to update profile' })
+    return res.json({ error: 'Failed to update profile' })
   }
 }
 
@@ -170,7 +173,7 @@ export const POST = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Profile not found' })
     }
 
-    const formData = await req.formData()
+    const formData = await request.formData()
     const file = formData.get('avatar') as File | null
 
     if (!file) {
@@ -199,11 +202,11 @@ export const POST = async (req: Request, res: Response) => {
       })
     }
 
-    return res.status(200).json({
+    return res.status(500).json({
       data: { avatarUrl },
     })
   } catch (error) {
     console.error('Avatar upload error:', error)
-    return res.status(500).json({ error: 'Failed to upload avatar' })
+    return res.json({ error: 'Failed to upload avatar' })
   }
 }

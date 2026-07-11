@@ -8,6 +8,9 @@ interface ReplyListProps {
   onReply: (commentId: string) => void
   onEdit: (commentId: string, content: string) => void
   onDelete: (commentId: string) => void
+  onLike?: (commentId: string, data: { likeCount: number; dislikeCount: number; isLikedByUser: boolean; isDislikedByUser: boolean }) => void
+  onDislike?: (commentId: string, data: { likeCount: number; dislikeCount: number; isLikedByUser: boolean; isDislikedByUser: boolean }) => void
+  onTranslate?: (commentId: string, translatedContent: string) => void
 }
 
 export function ReplyList({
@@ -16,6 +19,9 @@ export function ReplyList({
   onReply,
   onEdit,
   onDelete,
+  onLike,
+  onDislike,
+  onTranslate,
 }: ReplyListProps) {
   if (replies.length === 0) return null
 
@@ -29,6 +35,9 @@ export function ReplyList({
           onReply={onReply}
           onEdit={onEdit}
           onDelete={onDelete}
+          onLike={onLike}
+          onDislike={onDislike}
+          onTranslate={onTranslate}
         />
       ))}
     </div>

@@ -2,9 +2,996 @@
 - Local:         http://localhost:3000
 - Network:       http://10.123.254.159:3000
 - Environments: .env.local, .env
-✓ Ready in 263ms
+✓ Ready in 255ms
 
- GET / 200 in 222ms (next.js: 81ms, application-code: 142ms)
+ GET / 200 in 291ms (next.js: 108ms, application-code: 183ms)
+Session error: Error [PrismaClientInitializationError]: 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["db"].profile.findUnique()` invocation in
+/Users/rishab/Desktop/TOUTUBE/frontend/.next/dev/server/chunks/[root-of-the-server]__0xu9kt0._.js:289:160
+
+  286         status: 200
+  287     });
+  288 }
+→ 289 const profile = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["db"].profile.findUnique(
+Can't reach database server at `db.apdgqcosehwznipormnb.supabase.co:5432`
+
+Please make sure your database server is running at `db.apdgqcosehwznipormnb.supabase.co:5432`.
+    at <unknown> (src/app/api/auth/session/route.ts:13:38)
+    at async GET (src/app/api/auth/session/route.ts:13:21)
+  11 |     }
+  12 |
+> 13 |     const profile = await db.profile.findUnique({
+     |                                      ^
+  14 |       where: { userId: session.user.id! },
+  15 |       include: { channel: true },
+  16 |     }) {
+  clientVersion: '6.19.3',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/auth/session 500 in 5.3s (next.js: 110ms, application-code: 5.2s)
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+✓ Compiled in 1418ms
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET / 500 in 189ms (next.js: 94ms, application-code: 95ms)
+[browser] ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  2 |
+  3 | import { useEffect, useRef, useCallback } from 'react'
+> 4 | import { io, Socket } from 'socket.io-client'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import { useAuthStore } from '@/stores/auth-store'
+  6 | import { useWatchPartyStore } from '@/stores/watch-party-store'
+  7 | import type { WatchPartySocketParticipant, WatchPartyChatMessage } from '@/types'
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found 
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[browser] ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  2 |
+  3 | import { useEffect, useRef, useCallback } from 'react'
+> 4 | import { io, Socket } from 'socket.io-client'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import { useAuthStore } from '@/stores/auth-store'
+  6 | import { useWatchPartyStore } from '@/stores/watch-party-store'
+  7 | import type { WatchPartySocketParticipant, WatchPartyChatMessage } from '@/types'
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found 
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET / 500 in 48ms (next.js: 29ms, application-code: 19ms)
+ GET / 500 in 55ms (next.js: 37ms, application-code: 19ms)
+ GET / 500 in 56ms (next.js: 42ms, application-code: 14ms)
+ GET / 500 in 58ms (next.js: 45ms, application-code: 13ms)
+ GET / 500 in 43ms (next.js: 33ms, application-code: 11ms)
+ GET / 500 in 43ms (next.js: 36ms, application-code: 7ms)
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { useEffect, useRef, useCallback } [36mfrom[0m [32m'react'[0m
+[31m[1m>[0m [90m4 |[0m [36mimport[0m { io, [33mSocket[0m } [36mfrom[0m [32m'socket.io-client'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m5 |[0m [36mimport[0m { useAuthStore } [36mfrom[0m [32m'@/stores/auth-store'[0m
+  [90m6 |[0m [36mimport[0m { useWatchPartyStore } [36mfrom[0m [32m'@/stores/watch-party-store'[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m { [33mWatchPartySocketParticipant[0m, [33mWatchPartyChatMessage[0m } [36mfrom[0m [32m'@/types'[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET / 500 in 21ms (next.js: 7ms, application-code: 15ms)
+ GET / 500 in 21ms (next.js: 13ms, application-code: 8ms)
+[browser] ./src/hooks/use-watch-party-socket.ts:4:1
+Module not found: Can't resolve 'socket.io-client'
+  2 |
+  3 | import { useEffect, useRef, useCallback } from 'react'
+> 4 | import { io, Socket } from 'socket.io-client'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import { useAuthStore } from '@/stores/auth-store'
+  6 | import { useWatchPartyStore } from '@/stores/watch-party-store'
+  7 | import type { WatchPartySocketParticipant, WatchPartyChatMessage } from '@/types'
+
+Import traces:
+  Client Component Browser:
+    ./src/hooks/use-watch-party-socket.ts [Client Component Browser]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component Browser]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/hooks/use-watch-party-socket.ts [Client Component SSR]
+    ./src/components/watch-party/watch-party-room.tsx [Client Component SSR]
+    ./src/components/watch-party/watch-party-page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found 
+ GET / 200 in 59ms (next.js: 42ms, application-code: 17ms)
+ GET / 200 in 199ms (next.js: 66ms, application-code: 133ms)
+ GET / 200 in 82ms (next.js: 39ms, application-code: 43ms)
+ GET / 200 in 222ms (next.js: 2ms, application-code: 220ms)
+ GET /api/auth/session 200 in 2.2s (next.js: 39ms, application-code: 2.1s)
 prisma:query SELECT "public"."Profile"."id", "public"."Profile"."userId", "public"."Profile"."name", "public"."Profile"."username", "public"."Profile"."email", "public"."Profile"."avatarUrl", "public"."Profile"."bannerUrl", "public"."Profile"."bio", "public"."Profile"."createdAt", "public"."Profile"."updatedAt" FROM "public"."Profile" WHERE ("public"."Profile"."userId" = $1 AND 1=1) LIMIT $2 OFFSET $3
-prisma:query SELECT "public"."Channel"."id", "public"."Channel"."profileId", "public"."Channel"."name", "public"."Channel"."handle", "public"."Channel"."description", "public"."Channel"."avatarUrl", "public"."Channel"."bannerUrl", "public"."Channel"."subscriberCount", "public"."Channel"."videoCount", "public"."Channel"."createdAt", "public"."Channel"."updatedAt" FROM "public"."Channel" WHERE "public"."Channel"."profileId" IN ($1) OFFSET $2
- GET /api/auth/session 200 in 2.1s (next.js: 66ms, application-code: 2.0s)
+ GET /api/videos?page=1&category=All&sortBy=newest 404 in 110ms (next.js: 77ms, application-code: 33ms)

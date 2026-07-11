@@ -10,6 +10,6 @@ interface LikedVideoEntry {
 
 export const likedVideosService = {
   async list() {
-    return api.get<ApiResponse<LikedVideoEntry[]>>('/likes/videos')
+    return api.get<ApiResponse<LikedVideoEntry[]>>('/api/likes/videos')
   },
 }

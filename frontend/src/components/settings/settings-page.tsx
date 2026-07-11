@@ -9,18 +9,22 @@ import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
 import { ErrorState } from '@/components/shared/error-state'
 import { profileService, type ProfileFormData } from '@/services/profile-service'
+import { sessionService } from '@/services/session-service'
 import { useAuthStore } from '@/stores/auth-store'
-import type { Profile } from '@/types'
-import { Camera, Loader2, Save, User, Tv } from 'lucide-react'
+import type { Profile, MembershipData, LoginSessionInfo } from '@/types'
+import { Camera, Loader2, Save, User, Tv, Crown, Monitor, Globe, ShieldCheck, ShieldAlert, Trash2, Smartphone } from 'lucide-react'
 import { toast } from 'sonner'
+import { formatDistanceToNow } from 'date-fns'
 
 export function SettingsPage() {
   const { fetchSession } = useAuthStore()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [profile, setProfile] = useState<Profile | null>(null)
+  const [membershipData, setMembershipData] = useState<MembershipData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
@@ -35,6 +39,11 @@ export function SettingsPage() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
 
   const [hasChanges, setHasChanges] = useState(false)
+
+  // Login sessions state
+  const [sessions, setSessions] = useState<LoginSessionInfo[]>([])
+  const [sessionsLoading, setSessionsLoading] = useState(true)
+  const [revokingId, setRevokingId] = useState<string | null>(null)
 
   const fetchProfile = useCallback(async () => {
     setLoading(true)
@@ -57,9 +66,30 @@ export function SettingsPage() {
     }
   }, [])
 
+  const fetchSessions = useCallback(async () => {
+    setSessionsLoading(true)
+    try {
+      const res = await sessionService.getSessions()
+      const data = (res as { data: LoginSessionInfo[] }).data
+      setSessions(data || [])
+    } catch {
+      // Sessions are non-critical
+    } finally {
+      setSessionsLoading(false)
+    }
+  }, [])
+
   useEffect(() => {
     fetchProfile()
   }, [fetchProfile])
+
+  useEffect(() => {
+    if (!profile) return
+    fetchSessions()
+    fetch('/api/memberships').then(r => r.json()).then(d => {
+      if (d.data) setMembershipData(d.data)
+    }).catch(() => {})
+  }, [profile, fetchSessions])
 
   useEffect(() => {
     if (!profile) return
@@ -171,6 +201,24 @@ export function SettingsPage() {
     }
   }
 
+  const handleRevokeSession = async (sessionId: string) => {
+    setRevokingId(sessionId)
+    try {
+      await sessionService.revokeSession(sessionId)
+      setSessions((prev) => prev.filter((s) => s.id !== sessionId))
+      toast.success('Session revoked')
+    } catch {
+      toast.error('Failed to revoke session')
+    } finally {
+      setRevokingId(null)
+    }
+  }
+
+  const getDeviceIcon = (device: string | null) => {
+    if (device === 'Mobile') return <Smartphone className="h-4 w-4" />
+    return <Monitor className="h-4 w-4" />
+  }
+
   if (loading) {
     return (
       <AuthGuard>
@@ -201,6 +249,9 @@ export function SettingsPage() {
       </AuthGuard>
     )
   }
+
+  // Mark the first session as current (most recently active)
+  const currentSessionId = sessions.length > 0 ? sessions[0].id : null
 
   return (
     <AuthGuard>
@@ -383,6 +434,119 @@ export function SettingsPage() {
               </Card>
             </>
           )}
+
+          <Separator />
+
+          {/* Subscription & Plan */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <Crown className="h-4 w-4" />
+                Subscription & Plan
+              </CardTitle>
+              <CardDescription>Manage your subscription plan and billing</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p>{membershipData ? `Plan: ${String(membershipData.currentPlan?.name ?? 'none')}` : 'Loading...'}</p>
+            </CardContent>
+          </Card>
+
+          <Separator />
+
+          {/* Login Sessions */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4" />
+                Login Sessions
+              </CardTitle>
+              <CardDescription>Manage devices where you&apos;re signed in</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {sessionsLoading ? (
+                <div className="space-y-3">
+                  {Array.from({ length: 2 }).map((_, i) => (
+                    <div key={i} className="rounded-lg border p-4 animate-pulse space-y-2">
+                      <div className="h-4 w-48 bg-muted rounded" />
+                      <div className="h-3 w-32 bg-muted rounded" />
+                    </div>
+                  ))}
+                </div>
+              ) : sessions.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-4">
+                  No active sessions found.
+                </p>
+              ) : (
+                <div className="space-y-3 max-h-96 overflow-y-auto">
+                  {sessions.map((session) => {
+                    const isCurrent = session.id === currentSessionId
+                    return (
+                      <div
+                        key={session.id}
+                        className="rounded-lg border p-4 flex items-start justify-between gap-3"
+                      >
+                        <div className="flex items-start gap-3 min-w-0">
+                          <div className="mt-0.5 text-muted-foreground flex-shrink-0">
+                            {getDeviceIcon(session.device)}
+                          </div>
+                          <div className="min-w-0 space-y-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-medium text-sm">
+                                {session.browser || 'Unknown Browser'}
+                              </span>
+                              <span className="text-muted-foreground text-sm">on</span>
+                              <span className="text-sm">{session.os || 'Unknown OS'}</span>
+                              {isCurrent && (
+                                <Badge variant="secondary" className="text-xs">
+                                  Current
+                                </Badge>
+                              )}
+                              {session.isVerified ? (
+                                <Badge variant="outline" className="text-xs border-emerald-500 text-emerald-600 dark:text-emerald-400">
+                                  <ShieldCheck className="h-3 w-3 mr-1" />
+                                  Verified
+                                </Badge>
+                              ) : (
+                                <Badge variant="outline" className="text-xs border-amber-500 text-amber-600 dark:text-amber-400">
+                                  <ShieldAlert className="h-3 w-3 mr-1" />
+                                  Unverified
+                                </Badge>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                              <Globe className="h-3 w-3" />
+                              <span>{session.ip || 'Unknown IP'}</span>
+                              <span>·</span>
+                              <span>{session.location || 'Unknown Location'}</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              Last active: {formatDistanceToNow(new Date(session.lastActive), { addSuffix: true })}
+                            </p>
+                          </div>
+                        </div>
+                        {!isCurrent && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-muted-foreground hover:text-destructive flex-shrink-0"
+                            onClick={() => handleRevokeSession(session.id)}
+                            disabled={revokingId === session.id}
+                            aria-label="Revoke session"
+                          >
+                            {revokingId === session.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="h-4 w-4" />
+                            )}
+                          </Button>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
           <Separator />
 

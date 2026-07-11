@@ -18,6 +18,7 @@ import { formatViewCount } from '@/lib/format'
 import { CommentForm } from './comment-form'
 import { CommentItem, type CommentItemData } from './comment-item'
 import { ReplyList } from './reply-list'
+import { ApiError } from '@/services/api'
 
 interface CommentSectionProps {
   videoId: string
@@ -41,9 +42,9 @@ export function CommentSection({ videoId }: CommentSectionProps) {
   const [isAddingComment, setIsAddingComment] = useState(false)
 
   const fetchComments = useCallback(
-    async (pageNum: number, reset = false) => {
+    async (pageNum: number, reset = false, sort?: SortOption) => {
       try {
-        const res = await commentService.getComments(videoId, pageNum)
+        const res = await commentService.getComments(videoId, pageNum, sort || sortBy)
         if (res.data) {
           if (reset) {
             setComments(res.data)
@@ -60,13 +61,24 @@ export function CommentSection({ videoId }: CommentSectionProps) {
         setLoading(false)
       }
     },
-    [videoId]
+    [videoId, sortBy]
   )
 
   useEffect(() => {
     setLoading(true)
     fetchComments(1, true)
   }, [fetchComments])
+
+  // Re-fetch when sort changes
+  const handleSortChange = useCallback(
+    (val: string) => {
+      const newSort = val as SortOption
+      setSortBy(newSort)
+      setLoading(true)
+      fetchComments(1, true, newSort)
+    },
+    [fetchComments]
+  )
 
   const refreshComments = useCallback(() => {
     fetchComments(1, true)
@@ -76,12 +88,22 @@ export function CommentSection({ videoId }: CommentSectionProps) {
     async (content: string) => {
       setIsAddingComment(true)
       try {
-        await commentService.addComment(videoId, content)
-        toast.success('Comment added')
+        const res = await commentService.addComment(videoId, content)
+        if (res.warning) {
+          toast.warning(res.warning)
+        } else {
+          toast.success('Comment added')
+        }
         setReplyingTo(null)
         refreshComments()
-      } catch {
-        toast.error('Failed to add comment')
+      } catch (err) {
+        if (err instanceof ApiError && err.code === 'RATE_LIMITED') {
+          toast.error('You are posting too quickly. Please wait a moment.')
+        } else if (err instanceof ApiError && err.code === 'DUPLICATE_COMMENT') {
+          toast.error('You already posted this comment')
+        } else {
+          toast.error('Failed to add comment')
+        }
       } finally {
         setIsAddingComment(false)
       }
@@ -94,12 +116,20 @@ export function CommentSection({ videoId }: CommentSectionProps) {
       if (!replyingTo) return
       setSubmittingId(replyingTo)
       try {
-        await commentService.addComment(videoId, content, replyingTo)
-        toast.success('Reply added')
+        const res = await commentService.addComment(videoId, content, replyingTo)
+        if (res.warning) {
+          toast.warning(res.warning)
+        } else {
+          toast.success('Reply added')
+        }
         setReplyingTo(null)
         refreshComments()
-      } catch {
-        toast.error('Failed to add reply')
+      } catch (err) {
+        if (err instanceof ApiError && err.code === 'RATE_LIMITED') {
+          toast.error('You are posting too quickly. Please wait a moment.')
+        } else {
+          toast.error('Failed to add reply')
+        }
       } finally {
         setSubmittingId(null)
       }
@@ -137,6 +167,57 @@ export function CommentSection({ videoId }: CommentSectionProps) {
       }
     },
     [refreshComments]
+  )
+
+  const handleLike = useCallback(
+    (commentId: string, data: { likeCount: number; dislikeCount: number; isLikedByUser: boolean; isDislikedByUser: boolean }) => {
+      setComments((prev) =>
+        prev.map((c) => {
+          if (c.id === commentId) {
+            return { ...c, ...data }
+          }
+          if (c.replies) {
+            const updatedReplies = c.replies.map((r) =>
+              r.id === commentId ? { ...r, ...data } : r
+            )
+            if (updatedReplies !== c.replies) {
+              return { ...c, replies: updatedReplies }
+            }
+          }
+          return c
+        })
+      )
+    },
+    []
+  )
+
+  const handleDislike = useCallback(
+    (commentId: string, data: { likeCount: number; dislikeCount: number; isLikedByUser: boolean; isDislikedByUser: boolean }) => {
+      setComments((prev) =>
+        prev.map((c) => {
+          if (c.id === commentId) {
+            return { ...c, ...data }
+          }
+          if (c.replies) {
+            const updatedReplies = c.replies.map((r) =>
+              r.id === commentId ? { ...r, ...data } : r
+            )
+            if (updatedReplies !== c.replies) {
+              return { ...c, replies: updatedReplies }
+            }
+          }
+          return c
+        })
+      )
+    },
+    []
+  )
+
+  const handleTranslate = useCallback(
+    (commentId: string, translatedContent: string) => {
+      // Translation is handled internally by CommentItem via local state
+    },
+    []
   )
 
   const handleReplyClick = useCallback((commentId: string) => {
@@ -177,7 +258,7 @@ export function CommentSection({ videoId }: CommentSectionProps) {
           <DropdownMenuContent align="end" className="w-44">
             <DropdownMenuRadioGroup
               value={sortBy}
-              onValueChange={(val) => setSortBy(val as SortOption)}
+              onValueChange={handleSortChange}
             >
               <DropdownMenuRadioItem value="top">
                 Top comments
@@ -267,6 +348,9 @@ export function CommentSection({ videoId }: CommentSectionProps) {
                 onReply={handleReplyClick}
                 onEdit={handleEditClick}
                 onDelete={handleDelete}
+                onLike={handleLike}
+                onDislike={handleDislike}
+                onTranslate={handleTranslate}
               />
             )}
 
@@ -290,6 +374,9 @@ export function CommentSection({ videoId }: CommentSectionProps) {
                 onReply={handleReplyClick}
                 onEdit={handleEditClick}
                 onDelete={handleDelete}
+                onLike={handleLike}
+                onDislike={handleDislike}
+                onTranslate={handleTranslate}
               />
             )}
           </div>

@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { db } from '../lib/db'
+import { db } from '@/lib/db'
 
 export const GET = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params
+    const { id } = await params
 
     const video = await db.video.findUnique({
       where: { id },
@@ -61,9 +61,9 @@ export const GET = async (req: Request, res: Response) => {
         : null,
     }
 
-    return res.status(200).json({ data: formatted })
+    return res.status(500).json({ data: formatted })
   } catch (error) {
     console.error('Video get error:', error)
-    return res.status(500).json({ error: 'Failed to fetch video' })
+    return res.json({ error: 'Failed to fetch video' })
   }
 }

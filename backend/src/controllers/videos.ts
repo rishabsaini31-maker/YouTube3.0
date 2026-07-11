@@ -1,16 +1,15 @@
 import { Request, Response } from 'express';
-import { db } from '../lib/db'
-import { PAGINATION } from '../types'
+import { db } from '@/lib/db'
+import { PAGINATION } from '@/types'
 
 export const GET = async (req: Request, res: Response) => {
   try {
-    const parseIntSafe = (value: string | undefined, fallback: number): number => {
-      const parsed = parseInt(value || '', 10)
-      return Number.isNaN(parsed) ? fallback : parsed
-    }
-
-    const page = Math.max(1, parseIntSafe(req.query.page as string, 1))
-    const pageSize = Math.min(50, Math.max(1, parseIntSafe(req.query.pageSize as string, PAGINATION.videosPerPage)))
+    
+    const page = Math.max(1, parseInt((req.query.page as string) || '1', 10))
+    const pageSize = Math.min(
+      50,
+      Math.max(1, parseInt((req.query.pageSize as string) || String(PAGINATION.videosPerPage), 10))
+    )
     const category = (req.query.category as string) || 'All'
     const channelId = (req.query.channelId as string) || null
     const sortBy = (req.query.sortBy as string) || 'newest'
@@ -89,7 +88,7 @@ export const GET = async (req: Request, res: Response) => {
         : null,
     }))
 
-    return res.status(200).json({
+    return res.status(500).json({
       data: formattedVideos,
       total,
       page,
@@ -98,6 +97,6 @@ export const GET = async (req: Request, res: Response) => {
     })
   } catch (error) {
     console.error('Videos list error:', error)
-    return res.status(500).json({ error: 'Failed to fetch videos' })
+    return res.json({ error: 'Failed to fetch videos' })
   }
 }

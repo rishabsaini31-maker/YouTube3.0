@@ -13,13 +13,20 @@ interface AuthUser {
   channelHandle: string | null
 }
 
+interface PendingOtp {
+  sessionId: string
+  device: string
+  browser: string
+  os: string
+}
+
 interface AuthStore {
   user: AuthUser | null
   isAuthenticated: boolean
   isLoading: boolean
   isLoginOpen: boolean
   isRegisterOpen: boolean
-  _logoutCalled: boolean
+  pendingOtp: PendingOtp | null
 
   setUser: (user: AuthUser | null) => void
   setLoading: (loading: boolean) => void
@@ -28,118 +35,91 @@ interface AuthStore {
   openLogin: () => void
   openRegister: () => void
   closeAuthModals: () => void
+  setPendingOtp: (otp: PendingOtp | null) => void
+  clearPendingOtp: () => void
   logout: () => Promise<void>
   fetchSession: () => Promise<void>
 }
 
-export const useAuthStore = create<AuthStore>((set) => {
-  const savedUser = typeof window !== 'undefined' ? localStorage.getItem('auth-user') : null
-  const initialUser = savedUser ? JSON.parse(savedUser) : null
-  const logoutCalled = typeof window !== 'undefined' ? localStorage.getItem('auth-logout-called') === 'true' : false
+export const useAuthStore = create<AuthStore>((set) => ({
+  user: null,
+  isAuthenticated: false,
+  isLoading: true,
+  isLoginOpen: false,
+  isRegisterOpen: false,
+  pendingOtp: null,
 
-  return {
-    user: initialUser,
-    isAuthenticated: !!initialUser,
-    isLoading: true,
-    isLoginOpen: false,
-    isRegisterOpen: false,
-    _logoutCalled: logoutCalled,
+  setUser: (user) => set({ user, isAuthenticated: !!user, isLoading: false }),
 
-    setUser: (user) => {
-      if (user) {
-        localStorage.setItem('auth-user', JSON.stringify(user))
-        localStorage.removeItem('auth-logout-called')
-      } else {
-        localStorage.removeItem('auth-user')
-      }
-      set({ user, isAuthenticated: !!user, isLoading: false, _logoutCalled: false })
-    },
+  setLoading: (loading) => set({ isLoading: loading }),
 
-    setLoading: (loading) => set({ isLoading: loading }),
-
-    setLoginOpen: (open) => {
-      set({ isLoginOpen: open, isRegisterOpen: false })
-      if (open) {
-        document.body.style.overflow = 'hidden'
-      } else {
-        document.body.style.overflow = ''
-      }
-    },
-
-    setRegisterOpen: (open) => {
-      set({ isLoginOpen: false, isRegisterOpen: open })
-      if (open) {
-        document.body.style.overflow = 'hidden'
-      } else {
-        document.body.style.overflow = ''
-      }
-    },
-
-    openLogin: () => {
-      set({ isLoginOpen: true, isRegisterOpen: false })
+  setLoginOpen: (open) => {
+    set({ isLoginOpen: open, isRegisterOpen: false })
+    if (open) {
       document.body.style.overflow = 'hidden'
-    },
-
-    openRegister: () => {
-      set({ isLoginOpen: false, isRegisterOpen: true })
-      document.body.style.overflow = 'hidden'
-    },
-
-    closeAuthModals: () => {
-      set({ isLoginOpen: false, isRegisterOpen: false })
+    } else {
       document.body.style.overflow = ''
-    },
+    }
+  },
 
-    logout: async () => {
-      try {
-        await fetch('/api/auth/signout', { method: 'POST' })
-      } catch {
-        // ignore
-      }
+  setRegisterOpen: (open) => {
+    set({ isRegisterOpen: open, isLoginOpen: false })
+    if (open) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+  },
 
-      localStorage.removeItem('auth-user')
-      localStorage.setItem('auth-logout-called', 'true')
+  openLogin: () => {
+    set({ isLoginOpen: true, isRegisterOpen: false })
+    document.body.style.overflow = 'hidden'
+  },
 
-      const cookies = document.cookie.split(';')
-      for (const cookie of cookies) {
-        const [name] = cookie.split('=')
-        const trimmedName = name.trim()
-        if (trimmedName.startsWith('next-auth') || trimmedName === '__next_hmr_refresh_hash__' || trimmedName === 'refresh-token') {
-          document.cookie = `${trimmedName}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=None`
-        }
-      }
+  openRegister: () => {
+    set({ isRegisterOpen: true, isLoginOpen: false })
+    document.body.style.overflow = 'hidden'
+  },
 
-      set({ user: null, isAuthenticated: false, _logoutCalled: true })
-    },
+  closeAuthModals: () => {
+    set({ isLoginOpen: false, isRegisterOpen: false, pendingOtp: null })
+    document.body.style.overflow = ''
+  },
 
-    fetchSession: async () => {
-      set({ isLoading: true })
-      try {
-        const state = useAuthStore.getState()
-        if (state._logoutCalled) {
-          set({ user: null, isAuthenticated: false, isLoading: false })
+  setPendingOtp: (otp) => set({ pendingOtp: otp, isLoginOpen: false, isRegisterOpen: false }),
+
+  clearPendingOtp: () => {
+    set({ pendingOtp: null })
+    document.body.style.overflow = ''
+  },
+
+  logout: async () => {
+    try {
+      await fetch('/api/auth/signout', { method: 'POST' })
+    } catch {
+      // ignore
+    }
+    set({ user: null, isAuthenticated: false })
+  },
+
+  fetchSession: async () => {
+    set({ isLoading: true })
+    try {
+      const res = await fetch('/api/auth/session')
+      if (res.ok) {
+        const json = await res.json()
+        if (json.data) {
+          set({
+            user: json.data,
+            isAuthenticated: true,
+            isLoading: false,
+          })
           return
         }
-
-        const res = await fetch('/api/auth/session')
-        if (res.ok) {
-          const json = await res.json()
-          if (json.data) {
-            localStorage.setItem('auth-user', JSON.stringify(json.data))
-            localStorage.removeItem('auth-logout-called')
-            set({
-              user: json.data,
-              isAuthenticated: true,
-              isLoading: false,
-              _logoutCalled: false,
-            })
-            return
-          }
-        }
-        set({ user: null, isAuthenticated: false, isLoading: false })
-      } catch {
-        set({ user: null, isAuthenticated: false, isLoading: false })
       }
-    },
-  }
-})
+      set({ user: null, isAuthenticated: false, isLoading: false })
+    } catch {
+      set({ user: null, isAuthenticated: false, isLoading: false })
+    }
+  },
+}))

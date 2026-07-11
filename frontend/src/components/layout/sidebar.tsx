@@ -22,7 +22,11 @@ import {
   Film,
   Compass,
   Briefcase,
+  Crown,
   History,
+  Users,
+  ArrowDownToLine,
+  Shield,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -44,11 +48,15 @@ const libraryItems: SidebarItem[] = [
   { icon: History, label: 'History', viewName: 'history', auth: true },
   { icon: Clock, label: 'Watch later', viewName: 'watch-later', auth: true },
   { icon: ThumbsUp, label: 'Liked videos', viewName: 'liked-videos', auth: true },
+  { icon: ArrowDownToLine, label: 'Downloads', viewName: 'downloads', auth: true },
   { icon: Film, label: 'Your videos', viewName: 'your-videos', auth: true },
 ]
 
 const exploreItems: SidebarItem[] = [
   { icon: Compass, label: 'Trending', viewName: 'home' },
+  { icon: Users, label: 'Watch Party', viewName: 'watch-party', auth: true },
+  { icon: Shield, label: 'Moderation', viewName: 'moderation', auth: true },
+  { icon: Crown, label: 'Pricing', viewName: 'pricing' },
   { icon: Briefcase, label: 'Settings', viewName: 'settings', auth: true },
 ]
 

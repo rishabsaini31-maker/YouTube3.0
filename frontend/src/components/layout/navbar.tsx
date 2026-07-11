@@ -23,6 +23,7 @@ import {
   ArrowLeft,
   X,
 } from 'lucide-react'
+import { ThemeToggle } from '@/components/theme/theme-toggle'
 import type { SearchSuggestion } from '@/types'
 
 export function Navbar() {
@@ -224,7 +225,7 @@ export function Navbar() {
         </TooltipProvider>
       </form>
 
-      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 ml-auto">
+      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -250,11 +251,10 @@ export function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-10 w-10 rounded-full relative"
+                className="h-10 w-10 rounded-full"
                 aria-label="Notifications"
               >
                 <Bell className="h-5 w-5" />
-                <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full" />
               </Button>
             </TooltipTrigger>
             <TooltipContent side="bottom">
@@ -262,6 +262,8 @@ export function Navbar() {
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
+
+        <ThemeToggle />
 
         <div className="ml-1">
           <UserMenu />

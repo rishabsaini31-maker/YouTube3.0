@@ -15,6 +15,10 @@ import { LikedVideosPage } from '@/components/liked-videos/liked-videos-page'
 import { SubscriptionsPage } from '@/components/subscriptions/subscriptions-page'
 import { YourVideosPage } from '@/components/your-videos/your-videos-page'
 import { SettingsPage } from '@/components/settings/settings-page'
+import { WatchPartyPage } from '@/components/watch-party/watch-party-page'
+import { DownloadsPage } from '@/components/downloads/downloads-page'
+import { PricingPage } from '@/components/pricing/pricing-page'
+import { CommentModerationPage } from '@/components/moderation/comment-moderation-page'
 import { LoadingSpinner } from '@/components/shared/loading-spinner'
 
 function MainContent() {
@@ -47,6 +51,14 @@ function MainContent() {
       return <SettingsPage />
     case 'your-videos':
       return <YourVideosPage />
+    case 'watch-party':
+      return <WatchPartyPage />
+    case 'downloads':
+      return <DownloadsPage />
+    case 'pricing':
+      return <PricingPage />
+    case 'moderation':
+      return <CommentModerationPage />
     default:
       return <HomePage />
   }

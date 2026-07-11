@@ -44,6 +44,9 @@ function viewToHash(view: ViewRoute): string {
       return '#/settings'
     case 'your-videos':
       return '#/your-videos'
+    case 'watch-party':
+      if (view.params?.roomId) return `#/watch-party/${view.params.roomId}`
+      return '#/watch-party'
     case 'profile':
       return `#/profile/${view.params?.id || ''}`
     default:
@@ -78,6 +81,11 @@ function hashToView(hash: string): ViewRoute {
     return { name: 'profile', params: { id: profileMatch[1] } }
   }
 
+  const watchPartyRoomMatch = cleanHash.match(/^watch-party\/([^/]+)$/i)
+  if (watchPartyRoomMatch) {
+    return { name: 'watch-party', params: { roomId: watchPartyRoomMatch[1] } }
+  }
+
   const simpleRoutes: ViewName[] = [
     'upload',
     'history',
@@ -86,6 +94,10 @@ function hashToView(hash: string): ViewRoute {
     'subscriptions',
     'settings',
     'your-videos',
+    'watch-party',
+    'downloads',
+    'pricing',
+    'moderation',
   ]
   if (simpleRoutes.includes(cleanHash as ViewName)) {
     return { name: cleanHash as ViewName }

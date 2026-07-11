@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
-import { db } from '../lib/db'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { db } from '@/lib/db'
 
 export const GET = async (req: Request, res: Response) => {
   try {
@@ -58,10 +60,10 @@ export const GET = async (req: Request, res: Response) => {
       })),
     }))
 
-    return res.status(200).json({ data: formatted, total, page, pageSize, hasMore: skip + pageSize < total })
+    return res.status(500).json({ data: formatted, total, page, pageSize, hasMore: skip + pageSize < total })
   } catch (error) {
     console.error('Comments list error:', error)
-    return res.status(500).json({ error: 'Failed to fetch comments' })
+    return res.json({ error: 'Failed to fetch comments' })
   }
 }
 

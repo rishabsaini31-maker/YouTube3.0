@@ -16,17 +16,17 @@ export const videoService = {
     if (params.channelId) queryParams.channelId = params.channelId
     if (params.sortBy) queryParams.sortBy = params.sortBy
 
-    const res = await api.get<PaginatedResponse<VideoWithChannel>>('/videos', queryParams)
+    const res = await api.get<PaginatedResponse<VideoWithChannel>>('/api/videos', queryParams)
     return res
   },
 
   async getVideo(id: string): Promise<VideoWithChannel> {
-    const res = await api.get<ApiResponse<VideoWithChannel>>(`/videos/${id}`)
+    const res = await api.get<ApiResponse<VideoWithChannel>>(`/api/videos/${id}`)
     if (!res.data) throw new ApiError('Video not found', 404)
     return res.data
   },
 
   async recordView(videoId: string, profileId: string): Promise<void> {
-    await api.post('/videos/views', { videoId, profileId })
+    await api.post('/api/videos/views', { videoId, profileId })
   },
 }

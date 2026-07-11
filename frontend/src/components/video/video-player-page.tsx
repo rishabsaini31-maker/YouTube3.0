@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouterStore } from '@/stores/router-store'
 import { useAuthStore } from '@/stores/auth-store'
 import { videoService } from '@/services/video-service'
@@ -16,6 +16,7 @@ import { ErrorState } from '@/components/shared/error-state'
 import { LoadingSpinner } from '@/components/shared/loading-spinner'
 import { formatViewCount, formatTimeAgo, formatSubscriberCount } from '@/lib/format'
 import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
 import type { VideoWithChannel } from '@/types'
 
 export function VideoPlayerPage() {
@@ -32,6 +33,8 @@ export function VideoPlayerPage() {
   const [dislikeCount, setDislikeCount] = useState(0)
   const [userReaction, setUserReaction] = useState<'LIKE' | 'DISLIKE' | null>(null)
   const [showFullDescription, setShowFullDescription] = useState(false)
+  const [theaterMode, setTheaterMode] = useState(false)
+  const [suggestedVideos, setSuggestedVideos] = useState<VideoWithChannel[]>([])
 
   const fetchVideo = useCallback(async () => {
     if (!videoId) return
@@ -69,6 +72,29 @@ export function VideoPlayerPage() {
   useEffect(() => {
     fetchVideo()
   }, [fetchVideo])
+
+  // Build next video info from suggested videos
+  const nextVideo = useMemo(() => {
+    if (!video) return null
+    const next = suggestedVideos.find((v) => v.id !== video.id)
+    if (!next) return null
+    return {
+      id: next.id,
+      title: next.title,
+      thumbnailUrl: next.thumbnailUrl,
+      channelName: next.channel?.name || 'Unknown Channel',
+    }
+  }, [suggestedVideos, video])
+
+  const handleVideoEnded = useCallback(() => {
+    // Called when video ends and there is no next video
+  }, [])
+
+  const handleRequestNext = useCallback(() => {
+    if (nextVideo) {
+      navigate({ name: 'video', params: { id: nextVideo.id } })
+    }
+  }, [nextVideo, navigate])
 
   const handleSubscribe = async () => {
     if (!isAuthenticated) {
@@ -108,11 +134,34 @@ export function VideoPlayerPage() {
   const initials = channel?.name?.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2) || '?'
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 p-4 sm:p-6">
-      <div className="flex-1 min-w-0">
+    <div
+      className={cn(
+        'flex flex-col lg:flex-row gap-6 p-4 sm:p-6 transition-all duration-300',
+        theaterMode && 'max-w-full !p-0 lg:gap-0'
+      )}
+    >
+      <div
+        className={cn(
+          'flex-1 min-w-0 transition-all duration-300',
+          theaterMode && 'max-w-full'
+        )}
+      >
         {/* Video Player */}
-        <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden">
-          <VideoPlayer videoId={video.id} thumbnailUrl={video.thumbnailUrl} />
+        <div
+          className={cn(
+            'relative w-full aspect-video bg-black overflow-hidden transition-all duration-300',
+            theaterMode ? 'rounded-none' : 'rounded-xl'
+          )}
+        >
+          <VideoPlayer
+            videoId={video.id}
+            thumbnailUrl={video.thumbnailUrl}
+            onEnded={handleVideoEnded}
+            onRequestNext={handleRequestNext}
+            nextVideo={nextVideo}
+            theaterMode={theaterMode}
+            onTheaterModeChange={setTheaterMode}
+          />
         </div>
 
         {/* Video Title */}
@@ -208,12 +257,18 @@ export function VideoPlayerPage() {
         <CommentSection videoId={video.id} />
       </div>
 
-      {/* Suggested Videos Sidebar */}
-      <div className="w-full lg:w-96 flex-shrink-0">
+      {/* Suggested Videos Sidebar - hidden in theater mode on desktop */}
+      <div
+        className={cn(
+          'w-full lg:w-96 flex-shrink-0 transition-all duration-300',
+          theaterMode && 'hidden lg:block'
+        )}
+      >
         <SuggestedVideos
           currentVideoId={video.id}
           channelId={channel?.id || ''}
           category={video.category}
+          onVideosLoaded={setSuggestedVideos}
         />
       </div>
     </div>

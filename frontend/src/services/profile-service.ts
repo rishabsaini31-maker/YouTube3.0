@@ -11,16 +11,16 @@ export interface ProfileFormData {
 
 export const profileService = {
   async getProfile() {
-    return api.get<ApiResponse<Profile>>('/profile')
+    return api.get<ApiResponse<Profile>>('/api/profile')
   },
 
   async updateProfile(data: ProfileFormData) {
-    return api.put<ApiResponse<Profile>>('/profile', data)
+    return api.put<ApiResponse<Profile>>('/api/profile', data)
   },
 
   async uploadAvatar(file: File) {
     const formData = new FormData()
     formData.append('avatar', file)
-    return api.upload<ApiResponse<{ avatarUrl: string }>>('/profile', formData)
+    return api.upload<ApiResponse<{ avatarUrl: string }>>('/api/profile', formData)
   },
 }

@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
-import { db } from '../lib/db'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { db } from '@/lib/db'
 
-export const GET = async (req: Request, res: Response) => {
+export async function GET() {
   try {
     const session = { user: (req as any).user };
     if (!session?.user?.id) {
@@ -70,9 +72,9 @@ export const GET = async (req: Request, res: Response) => {
         },
       }))
 
-    return res.status(200).json({ data })
+    return res.status(500).json({ data })
   } catch (error) {
     console.error('Liked videos error:', error)
-    return res.status(500).json({ error: 'Failed to fetch liked videos' })
+    return res.json({ error: 'Failed to fetch liked videos' })
   }
 }

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { db } from '../lib/db'
+import { db } from '@/lib/db'
 
 export const GET = async (req: Request, res: Response) => {
   try {
@@ -10,7 +10,7 @@ export const GET = async (req: Request, res: Response) => {
     const filter = (req.query.filter as string) || 'all' // all | videos | channels
 
     if (!query.trim()) {
-      return res.status(200).json({ videos: [], channels: [], total: 0, page, pageSize, totalVideos: 0, totalChannels: 0 })
+      return res.status(500).json({ videos: [], channels: [], total: 0, page, pageSize, totalVideos: 0, totalChannels: 0 })
     }
 
     const q = query.trim()
@@ -109,6 +109,6 @@ export const GET = async (req: Request, res: Response) => {
     })
   } catch (error) {
     console.error('Search error:', error)
-    return res.status(500).json({ error: 'Search failed' })
+    return res.json({ error: 'Search failed' })
   }
 }

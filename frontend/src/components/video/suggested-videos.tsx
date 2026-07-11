@@ -10,11 +10,12 @@ interface SuggestedVideosProps {
   currentVideoId: string
   channelId: string
   category: string
+  onVideosLoaded?: (videos: VideoWithChannel[]) => void
 }
 
 const MAX_VIDEOS = 15
 
-export function SuggestedVideos({ currentVideoId, channelId, category }: SuggestedVideosProps) {
+export function SuggestedVideos({ currentVideoId, channelId, category, onVideosLoaded }: SuggestedVideosProps) {
   const [videos, setVideos] = useState<VideoWithChannel[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -82,7 +83,9 @@ export function SuggestedVideos({ currentVideoId, channelId, category }: Suggest
         return true
       })
 
-      setVideos(deduped.slice(0, MAX_VIDEOS))
+      const final = deduped.slice(0, MAX_VIDEOS)
+      setVideos(final)
+      onVideosLoaded?.(final)
     } catch {
       setError('Failed to load suggested videos')
     } finally {

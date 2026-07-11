@@ -16,15 +16,27 @@ model Profile {
   avatarUrl     String?
   bannerUrl     String?
   bio           String?
+  planId        String  @default("free")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
+  plan          Plan      @relation(fields: [planId], references: [name], onDelete: Restrict)
   channel       Channel?
   comments      Comment[]
   likes         Like[]
   subscriptions Subscription[] @relation("Subscriber")
   watchHistory  WatchHistory[]
   watchLater    WatchLater[]
+  hostedWatchParties  WatchPartyRoom[]  @relation("WatchPartyHost")
+  watchPartyParticipants WatchPartyParticipant[]
+  watchPartyMessages    WatchPartyMessage[]
+  downloads     Download[]
+  memberships   Membership[]
+  payments      Payment[]
+  loginSessions LoginSession[] @relation("LoginSessions")
+  commentReports CommentReport[] @relation("CommentReporter")
+  playlists     Playlist[]
+  notifications Notification[]
 
   @@index([userId])
   @@index([username])
@@ -74,6 +86,9 @@ model Video {
   likes        Like[]
   watchHistory WatchHistory[]
   watchLater   WatchLater[]
+  watchPartyRooms WatchPartyRoom[]
+  downloads      Download[]
+  playlistVideos PlaylistVideo[]
 
   @@index([channelId])
   @@index([category])
@@ -88,19 +103,25 @@ model Comment {
   parentId  String?
   content   String
   likeCount Int      @default(0)
+  dislikeCount Int   @default(0)
   isEdited  Boolean  @default(false)
+  isHidden  Boolean  @default(false)
+  isPinned  Boolean  @default(false)
+  isSpam    Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  video   Video     @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  profile Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  parent  Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
-  replies Comment[] @relation("CommentReplies")
+  video   Video           @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  profile Profile         @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  parent  Comment?        @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies Comment[]       @relation("CommentReplies")
   likedBy Like[]
+  reports CommentReport[] @relation("CommentReports")
 
   @@index([videoId])
   @@index([profileId])
   @@index([parentId])
+  @@index([isHidden])
 }
 
 model Like {
@@ -160,4 +181,226 @@ model WatchLater {
 
   @@unique([profileId, videoId])
   @@index([profileId, addedAt])
+}
+
+// ─── Watch Party ───────────────────────────────────────────────────────────────
+
+model WatchPartyRoom {
+  id            String   @id @default(cuid())
+  roomId        String   @unique
+  hostId        String
+  videoId       String
+  title         String
+  status        String   @default("active") // active | ended
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  host          Profile                  @relation("WatchPartyHost", fields: [hostId], references: [id], onDelete: Cascade)
+  video         Video                    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  participants  WatchPartyParticipant[]
+  messages      WatchPartyMessage[]
+
+  @@index([hostId])
+  @@index([videoId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model WatchPartyParticipant {
+  id            String   @id @default(cuid())
+  roomId        String
+  profileId     String
+  role          String   @default("member") // host | member
+  isOnline      Boolean  @default(true)
+  joinedAt      DateTime @default(now())
+  lastSeenAt    DateTime @default(now())
+
+  room          WatchPartyRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  profile       Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, profileId])
+  @@index([roomId])
+  @@index([profileId])
+}
+
+model WatchPartyMessage {
+  id            String   @id @default(cuid())
+  roomId        String
+  profileId     String
+  content       String
+  type          String   @default("text") // text | system
+  createdAt     DateTime @default(now())
+
+  room          WatchPartyRoom    @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  profile       Profile           @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([roomId, createdAt])
+  @@index([profileId])
+}
+
+// ─── Plans & Downloads ─────────────────────────────────────────────────────────
+
+model Plan {
+  id               String   @id @default(cuid())
+  name             String   @unique // free, bronze, silver, gold
+  displayName      String
+  downloadLimit    Int      @default(1)       // -1 = unlimited
+  downloadWindow   String   @default("day")   // day | week | month
+  price            Float    @default(0)
+  features         String   @default("[]")    // JSON list of feature strings
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  profiles   Profile[]
+
+  @@index([name])
+}
+
+model Download {
+  id            String   @id @default(cuid())
+  profileId     String
+  videoId       String
+  videoTitle    String
+  channelName   String?
+  thumbnailUrl  String
+  videoUrl      String
+  fileSize      Int?
+  quality       String   @default("original") // original | 720p | 480p | 360p
+  status        String   @default("completed") // pending | completed | failed
+  downloadedAt  DateTime @default(now())
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  video   Video   @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@index([profileId, downloadedAt])
+  @@index([videoId])
+}
+
+// ─── Login Sessions ─────────────────────────────────────────────────────────────
+
+model LoginSession {
+  id          String   @id @default(cuid())
+  profileId   String
+  device      String?
+  browser     String?
+  os          String?
+  ip          String?
+  location    String?
+  isVerified  Boolean  @default(true)
+  otpCode     String?
+  otpExpiry   DateTime?
+  lastActive  DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  profile Profile @relation("LoginSessions", fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([otpCode])
+}
+
+// ─── Comment Reports ─────────────────────────────────────────────────────────
+
+model CommentReport {
+  id          String   @id @default(cuid())
+  commentId   String
+  reporterId  String
+  reason      String   // spam | harassment | inappropriate | other
+  description String?
+  status      String   @default("pending") // pending | reviewed | dismissed
+  createdAt   DateTime @default(now())
+
+  comment  Comment @relation("CommentReports", fields: [commentId], references: [id], onDelete: Cascade)
+  reporter Profile @relation("CommentReporter", fields: [reporterId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, reporterId])
+  @@index([commentId])
+  @@index([reporterId])
+  @@index([status])
+}
+
+// ─── Memberships & Payments ────────────────────────────────────────────────────
+
+model Membership {
+  id            String   @id @default(cuid())
+  profileId     String
+  planId        String
+  status        String   @default("active") // active | cancelled | expired
+  startedAt     DateTime @default(now())
+  expiresAt     DateTime?
+  cancelledAt   DateTime?
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  payments Payment[]
+
+  @@index([profileId])
+  @@index([status])
+  @@index([expiresAt])
+}
+
+model Payment {
+  id              String   @id @default(cuid())
+  profileId       String
+  membershipId    String?
+  planId          String
+  amount          Float
+  currency        String   @default("INR")
+  status          String   @default("pending") // pending | completed | failed | refunded
+  razorpayOrderId      String?
+  razorpayPaymentId    String?
+  razorpaySignature    String?
+  paidAt          DateTime?
+  createdAt       DateTime @default(now())
+
+  profile    Profile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  membership Membership? @relation(fields: [membershipId], references: [id], onDelete: SetNull)
+
+  @@index([profileId, createdAt])
+  @@index([razorpayOrderId])
+  @@index([razorpayPaymentId])
+  @@index([status])
+}
+
+// ─── Playlists & Notifications ──────────────────────────────────────────────────
+
+model Playlist {
+  id          String   @id @default(cuid())
+  profileId   String
+  name        String
+  description String?
+  isPrivate   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  videos  PlaylistVideo[]
+
+  @@index([profileId])
+}
+
+model PlaylistVideo {
+  id         String   @id @default(cuid())
+  playlistId String
+  videoId    String
+  addedAt    DateTime @default(now())
+
+  playlist Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  video    Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@unique([playlistId, videoId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  profileId String
+  type      String   // 'upload', 'comment', 'reply', 'system'
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  linkUrl   String?
+  createdAt DateTime @default(now())
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId, isRead])
+  @@index([createdAt])
 }
