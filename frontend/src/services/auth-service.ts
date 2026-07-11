@@ -34,35 +34,57 @@ interface SessionResponse {
   channelHandle: string | null
 }
 
+async function relativeGet<T>(path: string): Promise<T> {
+  const res = await fetch(path)
+  if (!res.ok) {
+    const text = await res.text().catch(() => '')
+    throw new ApiError(text || 'Request failed', res.status)
+  }
+  return res.json()
+}
+
+async function relativePost<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetch(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) {
+    const text = await res.text().catch(() => '')
+    throw new ApiError(text || 'Request failed', res.status)
+  }
+  return res.json()
+}
+
 export const authService = {
   async register(data: RegisterData): Promise<RegisterResponse> {
-    const res = await api.post<ApiResponse<RegisterResponse>>('/api/auth/register', data)
+    const res = await relativePost<ApiResponse<RegisterResponse>>('/api/auth/register', data)
     return res.data!
   },
 
   async login(email: string, password: string): Promise<void> {
-    const res = await api.post<LoginResponse>('/api/auth/signin', {
+    const res = await relativePost<LoginResponse>('/api/auth/signin', {
       email,
       password,
       callbackUrl: '/',
       redirect: false,
     })
 
-    if (res.error) {
-      throw new ApiError(res.error, 401, 'AUTH_ERROR')
+    if ((res as any).error) {
+      throw new ApiError((res as any).error, 401, 'AUTH_ERROR')
     }
 
-    if (res.url) {
-      window.location.href = res.url
+    if ((res as any).url) {
+      window.location.href = (res as any).url
     }
   },
 
   async getSession(): Promise<SessionResponse | null> {
-    const res = await api.get<ApiResponse<SessionResponse>>('/api/auth/session')
+    const res = await relativeGet<ApiResponse<SessionResponse>>('/api/auth/session')
     return res.data || null
   },
 
   async logout(): Promise<void> {
-    await api.post('/api/auth/signout', {})
+    await relativePost('/api/auth/signout', {})
   },
 }
