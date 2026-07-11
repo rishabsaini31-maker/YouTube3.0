@@ -5,7 +5,7 @@ import { db } from '@/lib/db'
 
 export const GET = async (req: Request, res: Response) => {
   try {
-    const { id } = await params
+    const { id } = req.params
 
     const channel = await db.channel.findUnique({
       where: { id },

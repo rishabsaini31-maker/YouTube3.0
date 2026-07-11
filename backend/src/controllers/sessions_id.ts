@@ -18,7 +18,7 @@ export async function DELETE(
       return res.status(404).json({ error: 'Profile not found' })
     }
 
-    const { id } = await params
+    const { id } = req.params
 
     const loginSession = await db.loginSession.findUnique({
       where: { id },

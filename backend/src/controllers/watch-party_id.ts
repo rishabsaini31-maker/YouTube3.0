@@ -8,7 +8,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id: roomId } = await params
+    const { id: roomId } = req.params
 
     const session = { user: (req as any).user };
     if (!session?.user?.id) {
@@ -71,7 +71,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id: roomId } = await params
+    const { id: roomId } = req.params
 
     const session = { user: (req as any).user };
     if (!session?.user?.id) {

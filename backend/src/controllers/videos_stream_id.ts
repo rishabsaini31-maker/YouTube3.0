@@ -5,7 +5,7 @@ import path from 'path'
 
 export const GET = async (req: Request, res: Response) => {
   try {
-    const { id } = await params
+    const { id } = req.params
 
     const video = await db.video.findUnique({
       where: { id },

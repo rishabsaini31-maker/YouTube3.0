@@ -5,7 +5,7 @@ import { db } from '@/lib/db'
 
 export const GET = async (req: Request, res: Response) => {
   try {
-    const { id: roomId } = await params
+    const { id: roomId } = req.params
 
     const session = { user: (req as any).user };
     if (!session?.user?.id) {
@@ -66,7 +66,7 @@ export const GET = async (req: Request, res: Response) => {
 
 export const POST = async (req: Request, res: Response) => {
   try {
-    const { id: roomId } = await params
+    const { id: roomId } = req.params
 
     const session = { user: (req as any).user };
     if (!session?.user?.id) {

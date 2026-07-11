@@ -10,7 +10,7 @@ export const PUT = async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Authentication required' })
     }
 
-    const { id } = await params
+    const { id } = req.params
     const body = req.body
     const { content } = body
 
@@ -59,7 +59,7 @@ export const DELETE = async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Authentication required' })
     }
 
-    const { id } = await params
+    const { id } = req.params
 
     const profile = await db.profile.findUnique({ where: { userId: session.user.id! } })
     if (!profile) {
