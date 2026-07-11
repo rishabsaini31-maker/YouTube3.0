@@ -8,6 +8,25 @@ export const db =
   globalForPrisma.prisma ??
   new PrismaClient({
     log: ['query'],
+    __internal: {
+      engine: {
+        connectionTimeout: 30000,
+      },
+    },
   })
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
+
+export async function connectDb(retries = 5, delayMs = 2000): Promise<void> {
+  for (let i = 1; i <= retries; i++) {
+    try {
+      await db.$connect()
+      console.log('✅ Database connected successfully')
+      return
+    } catch (error) {
+      console.error(`❌ Database connection failed (attempt ${i}/${retries}):`, error instanceof Error ? error.message : error)
+      if (i === retries) throw error
+      await new Promise(resolve => setTimeout(resolve, delayMs))
+    }
+  }
+}
