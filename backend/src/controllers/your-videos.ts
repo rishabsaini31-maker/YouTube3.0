@@ -128,7 +128,7 @@ export const DELETE = async (req: Request, res: Response) => {
       // Ignore file deletion errors
     }
 
-    return res.status(500).json({ data: { success: true } })
+    return res.status(200).json({ data: { success: true } })
   } catch (error) {
     console.error('Delete video error:', error)
     return res.json({ error: 'Failed to delete video' })

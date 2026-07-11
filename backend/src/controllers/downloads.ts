@@ -113,7 +113,7 @@ export const GET = async (req: Request, res: Response) => {
       downloadedAt: d.downloadedAt.toISOString(),
     }))
 
-    return res.status(500).json({
+    return res.status(200).json({
       data: formattedDownloads,
       total,
       page,
@@ -233,7 +233,7 @@ export const POST = async (req: Request, res: Response) => {
       },
     })
 
-    return res.status(500).json({
+    return res.status(200).json({
       data: {
         id: download.id,
         videoUrl: video.videoUrl,
@@ -280,7 +280,7 @@ export const DELETE = async (req: Request, res: Response) => {
 
     await db.download.delete({ where: { id: downloadId } })
 
-    return res.status(500).json({ data: { success: true } })
+    return res.status(200).json({ data: { success: true } })
   } catch (error) {
     console.error('Download DELETE error:', error)
     return res.json({ error: 'Failed to delete download' })

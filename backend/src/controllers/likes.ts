@@ -44,7 +44,7 @@ export const POST = async (req: Request, res: Response) => {
           where: { id: videoId },
           data: { [field]: { decrement: 1 } },
         })
-        return res.status(500).json({ data: { reaction: null, likeCount: video[field] - 1, dislikeCount: video[type === 'LIKE' ? 'dislikeCount' : 'likeCount'] } })
+        return res.status(200).json({ data: { reaction: null, likeCount: video[field] - 1, dislikeCount: video[type === 'LIKE' ? 'dislikeCount' : 'likeCount'] } })
       } else {
         // Switch reaction
         const oldField = existing.type === 'LIKE' ? 'likeCount' : 'dislikeCount'
