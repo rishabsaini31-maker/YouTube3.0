@@ -11,28 +11,33 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error('Email and password are required')
-        }
+        try {
+          if (!credentials?.email || !credentials?.password) {
+            throw new Error('Email and password are required')
+          }
 
-        const profile = await db.profile.findUnique({
-          where: { email: credentials.email },
-        })
+          const profile = await db.profile.findUnique({
+            where: { email: credentials.email },
+          })
 
-        if (!profile) {
-          throw new Error('No account found with this email')
-        }
+          if (!profile) {
+            throw new Error('No account found with this email')
+          }
 
-        const isValid = await verifyPassword(credentials.password, profile.id)
+          const isValid = await verifyPassword(credentials.password, profile.id)
 
-        if (!isValid) {
-          throw new Error('Invalid password')
-        }
+          if (!isValid) {
+            throw new Error('Invalid password')
+          }
 
-        return {
-          id: profile.userId,
-          email: profile.email,
-          name: profile.name,
+          return {
+            id: profile.userId,
+            email: profile.email,
+            name: profile.name,
+          }
+        } catch (error) {
+          console.error('Auth authorize error:', error)
+          throw error
         }
       },
     }),
@@ -47,16 +52,20 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        const profile = await db.profile.findUnique({
-          where: { userId: user.id! },
-          include: { channel: true },
-        })
-        if (profile) {
-          token.profileId = profile.id
-          token.username = profile.username
-          token.avatarUrl = profile.avatarUrl
-          token.channelId = profile.channel?.id
-          token.channelHandle = profile.channel?.handle
+        try {
+          const profile = await db.profile.findUnique({
+            where: { userId: user.id! },
+            include: { channel: true },
+          })
+          if (profile) {
+            token.profileId = profile.id
+            token.username = profile.username
+            token.avatarUrl = profile.avatarUrl
+            token.channelId = profile.channel?.id
+            token.channelHandle = profile.channel?.handle
+          }
+        } catch (error) {
+          console.error('JWT callback error:', error)
         }
       }
       return token
@@ -73,36 +82,46 @@ export const authOptions: NextAuthOptions = {
 }
 
 async function verifyPassword(password: string, profileId: string): Promise<boolean> {
-  const crypto = await import('crypto')
-  const record = await db.profile.findUnique({
-    where: { id: profileId },
-    select: { id: true },
-  })
-  if (!record) return false
+  try {
+    const crypto = await import('crypto')
+    const record = await db.profile.findUnique({
+      where: { id: profileId },
+      select: { id: true },
+    })
+    if (!record) return false
 
-  const storedHash = await getPasswordHash(profileId)
-  if (!storedHash) return false
+    const storedHash = await getPasswordHash(profileId)
+    if (!storedHash) return false
 
-  const salt = storedHash.split(':')[0]
-  const hash = crypto
-    .pbkdf2Sync(password, salt, 10000, 64, 'sha512')
-    .toString('hex')
-  return hash === storedHash.split(':')[1]
+    const salt = storedHash.split(':')[0]
+    const hash = crypto
+      .pbkdf2Sync(password, salt, 10000, 64, 'sha512')
+      .toString('hex')
+    return hash === storedHash.split(':')[1]
+  } catch (error) {
+    console.error('Password verification error:', error)
+    return false
+  }
 }
 
 async function getPasswordHash(profileId: string): Promise<string | null> {
-  const profile = await db.profile.findUnique({
-    where: { id: profileId },
-    select: { id: true },
-  })
-  if (!profile) return null
-  const crypto = await import('crypto')
-  const fs = await import('fs')
-  const path = await import('path')
-  const hashPath = path.join(process.cwd(), 'db', 'passwords', `${profileId}.hash`)
   try {
-    return fs.readFileSync(hashPath, 'utf-8').trim()
-  } catch {
+    const profile = await db.profile.findUnique({
+      where: { id: profileId },
+      select: { id: true },
+    })
+    if (!profile) return null
+    const crypto = await import('crypto')
+    const fs = await import('fs')
+    const path = await import('path')
+    const hashPath = path.join(process.cwd(), 'db', 'passwords', `${profileId}.hash`)
+    try {
+      return fs.readFileSync(hashPath, 'utf-8').trim()
+    } catch {
+      return null
+    }
+  } catch (error) {
+    console.error('Get password hash error:', error)
     return null
   }
 }
