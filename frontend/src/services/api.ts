@@ -1,4 +1,5 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
+console.log('[API] BASE_URL =', BASE_URL)
 
 interface FetchOptions extends RequestInit {
   params?: Record<string, string>
