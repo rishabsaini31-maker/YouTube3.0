@@ -72,11 +72,13 @@ export const useAuthStore = create<AuthStore>((set) => ({
   },
 
   openLogin: () => {
+    localStorage.removeItem('auth-logged-out')
     set({ isLoginOpen: true, isRegisterOpen: false })
     document.body.style.overflow = 'hidden'
   },
 
   openRegister: () => {
+    localStorage.removeItem('auth-logged-out')
     set({ isRegisterOpen: true, isLoginOpen: false })
     document.body.style.overflow = 'hidden'
   },
@@ -95,14 +97,20 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
   logout: async () => {
     try {
-      await fetch('/api/auth/signout', { method: 'POST' })
+      await fetch('/api/auth/signout', { method: 'POST', credentials: 'include' })
     } catch {
       // ignore
     }
-    set({ user: null, isAuthenticated: false })
+    localStorage.removeItem('auth-user')
+    localStorage.setItem('auth-logged-out', 'true')
+    set({ user: null, isAuthenticated: false, isLoading: false })
   },
 
   fetchSession: async () => {
+    if (localStorage.getItem('auth-logged-out') === 'true') {
+      set({ user: null, isAuthenticated: false, isLoading: false })
+      return
+    }
     set({ isLoading: true })
     try {
       const res = await fetch('/api/auth/session')
