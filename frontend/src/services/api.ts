@@ -6,9 +6,11 @@ interface FetchOptions extends RequestInit {
 
 class ApiClient {
   private baseUrl: string
+  private getUserId: () => string | undefined
 
-  constructor(baseUrl: string) {
+  constructor(baseUrl: string, getUserId: () => string | undefined = () => undefined) {
     this.baseUrl = baseUrl
+    this.getUserId = getUserId
   }
 
   private async request<T>(endpoint: string, options: FetchOptions = {}): Promise<T> {
@@ -33,9 +35,15 @@ class ApiClient {
       ...(options.headers as Record<string, string>),
     }
 
+    const userId = this.getUserId()
+    if (userId) {
+      headers['x-user-id'] = userId
+    }
+
     const response = await fetch(url, {
       ...fetchOptions,
       headers,
+      credentials: 'include',
     })
 
     const data = await response.json()
@@ -129,4 +137,17 @@ export class ApiError extends Error {
   }
 }
 
-export const api = new ApiClient(BASE_URL)
+export const api = new ApiClient(BASE_URL, () => {
+  if (typeof window !== 'undefined') {
+    const user = localStorage.getItem('auth-user')
+    if (user) {
+      try {
+        const parsed = JSON.parse(user)
+        return parsed.userId || parsed.id
+      } catch {
+        return undefined
+      }
+    }
+  }
+  return undefined
+})
