@@ -45,7 +45,7 @@ export async function GET(req: Request, res: Response) {
       }
     })
 
-    return res.status(500).json({ data: channels })
+    return res.status(200).json({ data: channels })
   } catch (error) {
     console.error('Subscribed channels error:', error)
     return res.json({ error: 'Failed to fetch subscribed channels' })

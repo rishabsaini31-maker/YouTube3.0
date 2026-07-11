@@ -99,7 +99,7 @@ export const POST = async (req: Request, res: Response) => {
       update: { watchedAt: new Date() },
     })
 
-    return res.status(500).json({ message: 'History recorded' })
+    return res.status(200).json({ message: 'History recorded' })
   } catch (error) {
     console.error('History record error:', error)
     return res.json({ error: 'Failed to record history' })

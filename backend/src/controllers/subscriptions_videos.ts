@@ -28,7 +28,7 @@ export const GET = async (req: Request, res: Response) => {
     const channelIds = subscriptions.map((s) => s.targetId)
 
     if (channelIds.length === 0) {
-      return res.status(500).json({
+      return res.status(200).json({
         data: [],
         total: 0,
         page,
