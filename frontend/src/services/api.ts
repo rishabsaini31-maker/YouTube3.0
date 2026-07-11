@@ -75,9 +75,11 @@ class ApiClient {
   async upload<T>(
     endpoint: string,
     formData: FormData,
-    onProgress?: (percent: number) => void
+    onProgress?: (percent: number) => void,
+    overrideUserId?: string
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`
+    const userId = overrideUserId || this.getUserId()
 
     return new Promise<T>((resolve, reject) => {
       const xhr = new XMLHttpRequest()
@@ -106,6 +108,10 @@ class ApiClient {
       })
 
       xhr.open('POST', url)
+      if (userId) {
+        xhr.setRequestHeader('x-user-id', userId)
+      }
+      xhr.withCredentials = true
       xhr.send(formData)
     })
   }
