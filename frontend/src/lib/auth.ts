@@ -50,33 +50,53 @@ export const authOptions: NextAuthOptions = {
     signIn: '/',
   },
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        try {
+  async jwt({ token, user }) {
+    if (user) {
+      try {
+        const profile = await db.profile.findUnique({
+          where: { userId: user.id! },
+          include: { channel: true },
+        })
+        if (profile) {
+          token.profileId = profile.id
+          token.username = profile.username
+          token.avatarUrl = profile.avatarUrl
+          token.channelId = profile.channel?.id
+          token.channelHandle = profile.channel?.handle
+        }
+      } catch (error) {
+        console.error('JWT callback error:', error)
+      }
+    }
+    return token
+  },
+  async session({ session, token }) {
+    if (session.user && token) {
+      session.user.id = token.sub!
+      session.user.image = (token.avatarUrl as string) || null
+    }
+    return session
+  },
+  events: {
+    async signOut() {
+      try {
+        const session = await getServerSession(authOptions)
+        if (session?.user?.email) {
           const profile = await db.profile.findUnique({
-            where: { userId: user.id! },
-            include: { channel: true },
+            where: { email: session.user.email },
           })
           if (profile) {
-            token.profileId = profile.id
-            token.username = profile.username
-            token.avatarUrl = profile.avatarUrl
-            token.channelId = profile.channel?.id
-            token.channelHandle = profile.channel?.handle
+            await db.profile.update({
+              where: { id: profile.id },
+              data: { passwordHash: null },
+            })
           }
-        } catch (error) {
-          console.error('JWT callback error:', error)
         }
+      } catch (error) {
+        console.error('Signout cleanup error:', error)
       }
-      return token
     },
-    async session({ session, token }) {
-      if (session.user && token) {
-        session.user.id = token.sub!
-        session.user.image = (token.avatarUrl as string) || null
-      }
-      return session
-    },
+  },
   },
   secret: process.env.NEXTAUTH_SECRET || 'viewtube-dev-secret-change-in-production',
 }
@@ -84,20 +104,17 @@ export const authOptions: NextAuthOptions = {
 async function verifyPassword(password: string, profileId: string): Promise<boolean> {
   try {
     const crypto = await import('crypto')
-    const record = await db.profile.findUnique({
+    const profile = await db.profile.findUnique({
       where: { id: profileId },
-      select: { id: true },
+      select: { id: true, passwordHash: true },
     })
-    if (!record) return false
+    if (!profile?.passwordHash) return false
 
-    const storedHash = await getPasswordHash(profileId)
-    if (!storedHash) return false
-
-    const salt = storedHash.split(':')[0]
+    const salt = profile.passwordHash.split(':')[0]
     const hash = crypto
       .pbkdf2Sync(password, salt, 10000, 64, 'sha512')
       .toString('hex')
-    return hash === storedHash.split(':')[1]
+    return hash === profile.passwordHash.split(':')[1]
   } catch (error) {
     console.error('Password verification error:', error)
     return false
@@ -108,18 +125,9 @@ async function getPasswordHash(profileId: string): Promise<string | null> {
   try {
     const profile = await db.profile.findUnique({
       where: { id: profileId },
-      select: { id: true },
+      select: { passwordHash: true },
     })
-    if (!profile) return null
-    const crypto = await import('crypto')
-    const fs = await import('fs')
-    const path = await import('path')
-    const hashPath = path.join(process.cwd(), 'db', 'passwords', `${profileId}.hash`)
-    try {
-      return fs.readFileSync(hashPath, 'utf-8').trim()
-    } catch {
-      return null
-    }
+    return profile?.passwordHash || null
   } catch (error) {
     console.error('Get password hash error:', error)
     return null
@@ -128,20 +136,16 @@ async function getPasswordHash(profileId: string): Promise<string | null> {
 
 export async function hashPassword(password: string, profileId: string): Promise<string> {
   const crypto = await import('crypto')
-  const fs = await import('fs')
-  const path = await import('path')
-
   const salt = crypto.randomBytes(16).toString('hex')
   const hash = crypto
     .pbkdf2Sync(password, salt, 10000, 64, 'sha512')
     .toString('hex')
   const storedHash = `${salt}:${hash}`
 
-  const hashDir = path.join(process.cwd(), 'db', 'passwords')
-  if (!fs.existsSync(hashDir)) {
-    fs.mkdirSync(hashDir, { recursive: true })
-  }
-  fs.writeFileSync(path.join(hashDir, `${profileId}.hash`), storedHash)
+  await db.profile.update({
+    where: { id: profileId },
+    data: { passwordHash: storedHash },
+  })
 
   return storedHash
 }
