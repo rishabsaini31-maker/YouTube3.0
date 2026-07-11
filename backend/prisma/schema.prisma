@@ -16,11 +16,11 @@ model Profile {
   avatarUrl     String?
   bannerUrl     String?
   bio           String?
-  planId        String  @default("free")
+  planId        String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  plan          Plan      @relation(fields: [planId], references: [name], onDelete: Restrict)
+  plan          Plan?     @relation(fields: [planId], references: [name], onDelete: SetNull)
   channel       Channel?
   comments      Comment[]
   likes         Like[]
