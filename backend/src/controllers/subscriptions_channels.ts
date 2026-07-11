@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 
-export async function GET() {
+export async function GET(req: Request, res: Response) {
   try {
     const session = { user: (req as any).user };
     if (!session?.user?.id) {

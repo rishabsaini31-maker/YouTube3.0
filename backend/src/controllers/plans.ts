@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { db } from '@/lib/db'
 
 // GET /api/plans — list all available plans
-export async function GET() {
+export async function GET(_req: Request, res: Response) {
   try {
     const plans = await db.plan.findMany({
       orderBy: { price: 'asc' },

@@ -5,7 +5,7 @@ import { db } from '@/lib/db'
 import { saveFile } from '@/lib/storage'
 import { UPLOAD_LIMITS } from '@/types'
 
-export async function GET() {
+export async function GET(req: Request, res: Response) {
   try {
     const session = { user: (req as any).user };
     if (!session?.user?.id) {
