@@ -88,7 +88,7 @@ export const GET = async (req: Request, res: Response) => {
         : null,
     }))
 
-    return res.status(500).json({
+    return res.status(200).json({
       data: formattedVideos,
       total,
       page,
