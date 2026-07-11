@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
+
 const nextConfig: NextConfig = {
   output: "standalone",
   typescript: {
@@ -10,11 +12,11 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/uploads/:path*',
-        destination: 'http://localhost:5001/uploads/:path*',
+        destination: `${API_URL}/uploads/:path*`,
       },
       {
         source: '/api/videos/stream/:path*',
-        destination: 'http://localhost:5001/api/videos/stream/:path*',
+        destination: `${API_URL}/api/videos/stream/:path*`,
       },
     ]
   },
