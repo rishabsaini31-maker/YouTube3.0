@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/api/videos/stream/:path*',
-        destination: 'http://localhost:5001/videos/stream/:path*',
+        destination: 'http://localhost:5001/api/videos/stream/:path*',
       },
     ]
   },
