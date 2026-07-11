@@ -25,7 +25,9 @@ export async function connectDb(retries = 5, delayMs = 2000): Promise<void> {
       return
     } catch (error) {
       console.error(`❌ Database connection failed (attempt ${i}/${retries}):`, error instanceof Error ? error.message : error)
-      if (i === retries) throw error
+      if (i === retries) {
+        console.error('⚠️ Server will continue without database connection. Requests requiring DB may fail until connection is established.')
+      }
       await new Promise(resolve => setTimeout(resolve, delayMs))
     }
   }
