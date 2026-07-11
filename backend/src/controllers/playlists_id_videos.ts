@@ -56,7 +56,7 @@ export const POST = async (req: Request, res: Response) => {
       if (e.code !== 'P2002') throw e
     }
 
-    return res.status(500).json({ success: true })
+    return res.status(200).json({ success: true })
   } catch (error) {
     console.error('Playlist add video error:', error)
     return res.json({ error: 'Failed to add video to playlist' })
@@ -106,7 +106,7 @@ export const DELETE = async (req: Request, res: Response) => {
       }
     }).catch(() => {}) // Ignore if not found
 
-    return res.status(500).json({ success: true })
+    return res.status(200).json({ success: true })
   } catch (error) {
     console.error('Playlist remove video error:', error)
     return res.json({ error: 'Failed to remove video from playlist' })

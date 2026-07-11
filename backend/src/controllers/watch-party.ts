@@ -51,7 +51,7 @@ export const GET = async (req: Request, res: Response) => {
       updatedAt: r.updatedAt.toISOString(),
     }))
 
-    return res.status(500).json({
+    return res.status(200).json({
       data: formattedRooms,
       total,
       page,
@@ -127,7 +127,7 @@ export const POST = async (req: Request, res: Response) => {
       },
     })
 
-    return res.status(500).json({
+    return res.status(200).json({
       data: {
         id: room.id,
         roomId: room.roomId,

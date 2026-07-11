@@ -105,7 +105,7 @@ export const POST = async (req: Request, res: Response) => {
       })
     }
 
-    return res.status(500).json({ data: { received: true } })
+    return res.status(200).json({ data: { received: true } })
   } catch (error) {
     console.error('Webhook POST error:', error)
     return res.json({ error: 'Webhook processing failed' })

@@ -16,7 +16,7 @@ export const GET = async (req: Request, res: Response) => {
       include: { channel: true },
     })
     if (!profile?.channel) {
-      return res.status(500).json({
+      return res.status(200).json({
         data: [],
         total: 0,
         page: 1,

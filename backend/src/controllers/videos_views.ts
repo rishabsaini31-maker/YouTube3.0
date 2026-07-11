@@ -25,7 +25,7 @@ export const POST = async (req: Request, res: Response) => {
     })
 
     if (existingView) {
-      return res.status(500).json({ message: 'Already viewed today' })
+      return res.status(200).json({ message: 'Already viewed today' })
     }
 
     await db.$transaction([

@@ -49,7 +49,7 @@ export const POST = async (req: Request, res: Response) => {
       },
     })
 
-    return res.status(500).json({ message: 'OTP resent successfully' })
+    return res.status(200).json({ message: 'OTP resent successfully' })
   } catch (error) {
     console.error('Resend OTP error:', error)
     return res.json({ error: 'Failed to resend OTP' })

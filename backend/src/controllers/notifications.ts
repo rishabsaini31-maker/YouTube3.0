@@ -24,7 +24,7 @@ export const GET = async (req: Request, res: Response) => {
       take: 50,
     })
 
-    return res.status(500).json({ data: notifications })
+    return res.status(200).json({ data: notifications })
   } catch (error) {
     console.error('Notifications GET error:', error)
     return res.json({ error: 'Failed to fetch notifications' })
@@ -51,7 +51,7 @@ export const PUT = async (req: Request, res: Response) => {
       data: { isRead: true },
     })
 
-    return res.status(500).json({ success: true })
+    return res.status(200).json({ success: true })
   } catch (error) {
     console.error('Notifications PUT error:', error)
     return res.json({ error: 'Failed to mark notifications as read' })

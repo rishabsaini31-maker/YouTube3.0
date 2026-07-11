@@ -75,7 +75,7 @@ export const POST = async (req: Request, res: Response) => {
       orderBy: { joinedAt: 'asc' },
     })
 
-    return res.status(500).json({
+    return res.status(200).json({
       data: participants.map((p) => ({
         id: p.id,
         profileId: p.profileId,

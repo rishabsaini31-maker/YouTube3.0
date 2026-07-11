@@ -18,7 +18,7 @@ export async function GET(_req: Request, res: Response) {
       features: JSON.parse(p.features || '[]'),
     }))
 
-    return res.status(500).json({ data: formattedPlans })
+    return res.status(200).json({ data: formattedPlans })
   } catch (error) {
     console.error('Plans GET error:', error)
     return res.json({ error: 'Failed to fetch plans' })

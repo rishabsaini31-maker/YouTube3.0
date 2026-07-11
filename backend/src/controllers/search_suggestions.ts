@@ -7,7 +7,7 @@ export const GET = async (req: Request, res: Response) => {
     const query = (req.query.q as string) || ''
 
     if (query.length < 2) {
-      return res.status(500).json({ data: [] })
+      return res.status(200).json({ data: [] })
     }
 
     const videos = await db.video.findMany({

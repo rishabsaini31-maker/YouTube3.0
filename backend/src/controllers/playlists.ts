@@ -33,7 +33,7 @@ export const GET = async (req: Request, res: Response) => {
       }
     })
 
-    return res.status(500).json({ data: playlists })
+    return res.status(200).json({ data: playlists })
   } catch (error) {
     console.error('Playlists GET error:', error)
     return res.json({ error: 'Failed to fetch playlists' })
@@ -71,7 +71,7 @@ export const POST = async (req: Request, res: Response) => {
       },
     })
 
-    return res.status(500).json({ data: playlist })
+    return res.status(200).json({ data: playlist })
   } catch (error) {
     console.error('Playlist POST error:', error)
     return res.json({ error: 'Failed to create playlist' })

@@ -39,7 +39,7 @@ export async function GET(
       return res.status(404).json({ error: 'Room not found' })
     }
 
-    return res.status(500).json({
+    return res.status(200).json({
       data: {
         id: room.id,
         roomId: room.roomId,
@@ -102,7 +102,7 @@ export async function DELETE(
       data: { status: 'ended' },
     })
 
-    return res.status(500).json({
+    return res.status(200).json({
       data: { success: true },
       message: 'Watch party ended successfully',
     })

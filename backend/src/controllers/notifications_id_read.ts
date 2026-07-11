@@ -35,7 +35,7 @@ export const PUT = async (req: Request, res: Response) => {
       data: { isRead: true },
     })
 
-    return res.status(500).json({ success: true })
+    return res.status(200).json({ success: true })
   } catch (error) {
     console.error('Notification read PUT error:', error)
     return res.json({ error: 'Failed to mark notification as read' })

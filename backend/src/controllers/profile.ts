@@ -21,7 +21,7 @@ export async function GET(req: Request, res: Response) {
       return res.status(404).json({ error: 'Profile not found' })
     }
 
-    return res.status(500).json({
+    return res.status(200).json({
       data: {
         id: profile.id,
         userId: profile.userId,
@@ -123,7 +123,7 @@ export const PUT = async (req: Request, res: Response) => {
       include: { channel: true },
     })
 
-    return res.status(500).json({
+    return res.status(200).json({
       data: {
         id: refreshedProfile!.id,
         userId: refreshedProfile!.userId,
@@ -202,7 +202,7 @@ export const POST = async (req: Request, res: Response) => {
       })
     }
 
-    return res.status(500).json({
+    return res.status(200).json({
       data: { avatarUrl },
     })
   } catch (error) {

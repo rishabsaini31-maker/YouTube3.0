@@ -40,7 +40,7 @@ export async function GET(req: Request, res: Response) {
       createdAt: s.createdAt.toISOString(),
     }))
 
-    return res.status(500).json({ data })
+    return res.status(200).json({ data })
   } catch (error) {
     console.error('Fetch sessions error:', error)
     return res.json({ error: 'Failed to fetch sessions' })
@@ -107,7 +107,7 @@ export const POST = async (req: Request, res: Response) => {
       })
     }
 
-    return res.status(500).json({
+    return res.status(200).json({
       data: {
         sessionId: loginSession.id,
         isNewDevice,

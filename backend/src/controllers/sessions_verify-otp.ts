@@ -59,7 +59,7 @@ export const POST = async (req: Request, res: Response) => {
       },
     })
 
-    return res.status(500).json({ message: 'Session verified successfully' })
+    return res.status(200).json({ message: 'Session verified successfully' })
   } catch (error) {
     console.error('Verify OTP error:', error)
     return res.json({ error: 'Failed to verify OTP' })

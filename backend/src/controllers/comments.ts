@@ -60,7 +60,7 @@ export const GET = async (req: Request, res: Response) => {
       })),
     }))
 
-    return res.status(500).json({ data: formatted, total, page, pageSize, hasMore: skip + pageSize < total })
+    return res.status(200).json({ data: formatted, total, page, pageSize, hasMore: skip + pageSize < total })
   } catch (error) {
     console.error('Comments list error:', error)
     return res.json({ error: 'Failed to fetch comments' })

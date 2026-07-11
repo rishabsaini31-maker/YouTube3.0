@@ -33,7 +33,7 @@ export const GET = async (req: Request, res: Response) => {
       }
     }
 
-    return res.status(500).json({ data: playlist })
+    return res.status(200).json({ data: playlist })
   } catch (error) {
     console.error('Playlist GET error:', error)
     return res.json({ error: 'Failed to fetch playlist' })
@@ -71,7 +71,7 @@ export const DELETE = async (req: Request, res: Response) => {
       where: { id: req.params.id }
     })
 
-    return res.status(500).json({ success: true })
+    return res.status(200).json({ success: true })
   } catch (error) {
     console.error('Playlist DELETE error:', error)
     return res.json({ error: 'Failed to delete playlist' })

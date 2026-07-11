@@ -51,7 +51,7 @@ export const GET = async (req: Request, res: Response) => {
       createdAt: m.createdAt.toISOString(),
     }))
 
-    return res.status(500).json({
+    return res.status(200).json({
       data: formattedMessages,
       total,
       page,
@@ -120,7 +120,7 @@ export const POST = async (req: Request, res: Response) => {
       },
     })
 
-    return res.status(500).json({
+    return res.status(200).json({
       data: {
         id: message.id,
         content: message.content,

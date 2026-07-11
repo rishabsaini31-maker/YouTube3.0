@@ -36,7 +36,7 @@ export async function DELETE(
       where: { id },
     })
 
-    return res.status(500).json({ message: 'Session revoked' })
+    return res.status(200).json({ message: 'Session revoked' })
   } catch (error) {
     console.error('Revoke session error:', error)
     return res.json({ error: 'Failed to revoke session' })

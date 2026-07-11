@@ -37,7 +37,7 @@ export const PUT = async (req: Request, res: Response) => {
       data: { content: content.trim(), isEdited: true },
     })
 
-    return res.status(500).json({
+    return res.status(200).json({
       data: {
         id: updated.id,
         content: updated.content,
@@ -88,7 +88,7 @@ export const DELETE = async (req: Request, res: Response) => {
       data: { commentCount: { decrement: replyCount } },
     })
 
-    return res.status(500).json({ message: 'Comment deleted' })
+    return res.status(200).json({ message: 'Comment deleted' })
   } catch (error) {
     console.error('Comment delete error:', error)
     return res.json({ error: 'Failed to delete comment' })

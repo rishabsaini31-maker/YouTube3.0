@@ -76,7 +76,7 @@ export const GET = async (req: Request, res: Response) => {
         }
       : { name: 'free', displayName: 'Free', downloadLimit: 1, downloadWindow: 'day', price: 0, features: [] }
 
-    return res.status(500).json({
+    return res.status(200).json({
       data: {
         currentPlan: planInfo,
         membership: activeMembership
@@ -195,7 +195,7 @@ export const POST = async (req: Request, res: Response) => {
       },
     })
 
-    return res.status(500).json({
+    return res.status(200).json({
       data: {
         orderId,
         amount,
