@@ -46,7 +46,7 @@ export async function saveFile(
 
     return data.publicUrl
   } catch (error) {
-    console.error('Supabase upload failed, falling back to local storage:', error)
+    console.error('Supabase upload failed! Full error details:', JSON.stringify(error, null, 2))
     const dir = await ensureLocalDir(subfolder)
     const localPath = path.join(dir, `${uniqueId}.${ext}`)
     await fs.writeFile(localPath, buffer)
