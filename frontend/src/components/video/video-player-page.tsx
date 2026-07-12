@@ -155,6 +155,7 @@ export function VideoPlayerPage() {
         >
           <VideoPlayer
             videoId={video.id}
+            videoUrl={video.videoUrl}
             thumbnailUrl={video.thumbnailUrl}
             onEnded={handleVideoEnded}
             onRequestNext={handleRequestNext}

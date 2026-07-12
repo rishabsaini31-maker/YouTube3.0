@@ -5,6 +5,7 @@ import {
   useRef,
   useCallback,
   useEffect,
+  useMemo,
   type TouchEvent as ReactTouchEvent,
 } from 'react'
 import {
@@ -51,6 +52,7 @@ interface NextVideoInfo {
 
 export interface VideoPlayerProps {
   videoId: string
+  videoUrl?: string
   thumbnailUrl?: string
   onEnded?: () => void
   onRequestNext?: () => void
@@ -147,7 +149,12 @@ export function VideoPlayer({
   // Settings popover
   const [settingsOpen, setSettingsOpen] = useState(false)
 
-  const videoSrc = `/api/videos/stream/${videoId}`
+  const videoSrc = useMemo(() => {
+    if (videoUrl && (videoUrl.startsWith('http://') || videoUrl.startsWith('https://'))) {
+      return videoUrl
+    }
+    return `/api/videos/stream/${videoId}`
+  }, [videoId, videoUrl])
 
   // ─── Video element effects ────────────────────────────────
   useEffect(() => {

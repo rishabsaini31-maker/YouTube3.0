@@ -13,21 +13,21 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         try {
           if (!credentials?.email || !credentials?.password) {
-            throw new Error('Email and password are required')
+            return null
           }
 
           const profile = await db.profile.findUnique({
-            where: { email: credentials.email },
+            where: { email: credentials.email.toLowerCase() },
           })
 
           if (!profile) {
-            throw new Error('No account found with this email')
+            return null
           }
 
           const isValid = await verifyPassword(credentials.password, profile.id)
 
           if (!isValid) {
-            throw new Error('Invalid password')
+            return null
           }
 
           return {
@@ -37,7 +37,7 @@ export const authOptions: NextAuthOptions = {
           }
         } catch (error) {
           console.error('Auth authorize error:', error)
-          throw error
+          return null
         }
       },
     }),
