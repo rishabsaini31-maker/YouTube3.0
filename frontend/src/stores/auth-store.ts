@@ -49,7 +49,14 @@ export const useAuthStore = create<AuthStore>((set) => ({
   isRegisterOpen: false,
   pendingOtp: null,
 
-  setUser: (user) => set({ user, isAuthenticated: !!user, isLoading: false }),
+  setUser: (user) => {
+    if (user) {
+      localStorage.setItem('auth-user', JSON.stringify(user))
+    } else {
+      localStorage.removeItem('auth-user')
+    }
+    set({ user, isAuthenticated: !!user, isLoading: false })
+  },
 
   setLoading: (loading) => set({ isLoading: loading }),
 
@@ -117,6 +124,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
       if (res.ok) {
         const json = await res.json()
         if (json.data) {
+          localStorage.setItem('auth-user', JSON.stringify(json.data))
           set({
             user: json.data,
             isAuthenticated: true,

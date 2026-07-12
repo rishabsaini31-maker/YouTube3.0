@@ -117,14 +117,15 @@ export function YourVideosPage() {
 
     try {
       const res = await yourVideosService.getYourVideos(pageNum, 20, sort)
-      const data = res as unknown as PaginatedResponse<Video>
+      const data = res as unknown as PaginatedResponse<Video> & { error?: string }
+      if (data.error) throw new Error(data.error)
       if (append) {
-        setVideos((prev) => [...prev, ...data.data])
+        setVideos((prev) => [...prev, ...(data.data || [])])
       } else {
-        setVideos(data.data)
+        setVideos(data.data || [])
       }
-      setTotal(data.total)
-      setHasMore(data.hasMore)
+      setTotal(data.total || 0)
+      setHasMore(data.hasMore || false)
       setPage(pageNum)
     } catch {
       if (!append) setError(true)
