@@ -227,9 +227,9 @@ export function VideoPlayerPage() {
             )}
           </div>
           <p className={`text-sm whitespace-pre-line ${!showFullDescription ? 'line-clamp-3' : ''}`}>
-            {video.description}
+            {video.description || ''}
           </p>
-          {video.description.length > 200 && (
+          {(video.description?.length || 0) > 200 && (
             <button
               onClick={() => setShowFullDescription(!showFullDescription)}
               className="text-sm font-medium mt-1 hover:text-foreground/80"
