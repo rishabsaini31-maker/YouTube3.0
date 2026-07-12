@@ -24,6 +24,12 @@ export const authOptions: NextAuthOptions = {
             return null
           }
 
+          const isValid = await verifyPassword(credentials.password, profile.id)
+
+          if (!isValid) {
+            return null
+          }
+
           return {
             id: profile.userId,
             email: profile.email,
@@ -44,14 +50,6 @@ export const authOptions: NextAuthOptions = {
     signIn: '/',
   },
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      if (!user) {
-        console.log('Sign in failed: no user returned from authorize')
-        return false
-      }
-      console.log('Sign in successful for:', user.email)
-      return true
-    },
     async jwt({ token, user }) {
       if (user) {
         try {
@@ -97,3 +95,51 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET || 'viewtube-dev-secret-change-in-production',
 }
 
+async function verifyPassword(password: string, profileId: string): Promise<boolean> {
+  try {
+    const crypto = await import('crypto')
+    const profile = await db.profile.findUnique({
+      where: { id: profileId },
+      select: { id: true, passwordHash: true },
+    })
+    if (!profile?.passwordHash) return false
+
+    const salt = profile.passwordHash.split(':')[0]
+    const hash = crypto
+      .pbkdf2Sync(password, salt, 10000, 64, 'sha512')
+      .toString('hex')
+    return hash === profile.passwordHash.split(':')[1]
+  } catch (error) {
+    console.error('Password verification error:', error)
+    return false
+  }
+}
+
+async function getPasswordHash(profileId: string): Promise<string | null> {
+  try {
+    const profile = await db.profile.findUnique({
+      where: { id: profileId },
+      select: { passwordHash: true },
+    })
+    return profile?.passwordHash || null
+  } catch (error) {
+    console.error('Get password hash error:', error)
+    return null
+  }
+}
+
+export async function hashPassword(password: string, profileId: string): Promise<string> {
+  const crypto = await import('crypto')
+  const salt = crypto.randomBytes(16).toString('hex')
+  const hash = crypto
+    .pbkdf2Sync(password, salt, 10000, 64, 'sha512')
+    .toString('hex')
+  const storedHash = `${salt}:${hash}`
+
+  await db.profile.update({
+    where: { id: profileId },
+    data: { passwordHash: storedHash },
+  })
+
+  return storedHash
+}
