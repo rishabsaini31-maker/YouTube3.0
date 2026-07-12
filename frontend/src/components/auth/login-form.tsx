@@ -45,7 +45,10 @@ export function LoginForm() {
       })
 
       if (result?.error) {
-        toast.error(result.error === 'CredentialsSignin' ? 'Invalid email or password' : result.error)
+        const message = result.error === 'CredentialsSignin'
+          ? 'Invalid email or password'
+          : result.error
+        toast.error(message)
         return
       }
 
