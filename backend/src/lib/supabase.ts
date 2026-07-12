@@ -17,9 +17,9 @@ export const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY!,
   {
     global: {
-      fetch: (url, options) => {
+      fetch: ((url: any, options: any) => {
         return fetch(url, { ...options, agent } as any)
-      },
+      }) as any,
     },
   }
 )
