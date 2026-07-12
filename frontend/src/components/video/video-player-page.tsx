@@ -237,7 +237,7 @@ export function VideoPlayerPage() {
               {showFullDescription ? 'Show less' : 'Show more'}
             </button>
           )}
-          {video.tags.length > 0 && (
+          {Array.isArray(video.tags) && video.tags.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-3">
               {video.tags.map((tag) => (
                 <span
