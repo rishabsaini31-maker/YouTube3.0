@@ -51,7 +51,8 @@ export function SyncedVideoPlayer({ roomId, emit, videoId, isHost }: SyncedVideo
   const [waiting, setWaiting] = useState(false)
   const controlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const videoSrc = `/api/videos/stream/${videoId}`
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
+  const videoSrc = `${baseUrl}/api/videos/stream/${videoId}`
 
   // Sync video element with store state (for non-host)
   useEffect(() => {
