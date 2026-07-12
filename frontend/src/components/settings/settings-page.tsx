@@ -13,11 +13,22 @@ import { Badge } from '@/components/ui/badge'
 import { ErrorState } from '@/components/shared/error-state'
 import { profileService, type ProfileFormData } from '@/services/profile-service'
 import { sessionService } from '@/services/session-service'
+import { subscriptionService } from '@/services/subscription-plan-service'
 import { useAuthStore } from '@/stores/auth-store'
-import type { Profile, MembershipData, LoginSessionInfo } from '@/types'
-import { Camera, Loader2, Save, User, Tv, Crown, Monitor, Globe, ShieldCheck, ShieldAlert, Trash2, Smartphone } from 'lucide-react'
+import { useRouterStore } from '@/stores/router-store'
+import type { Profile, MembershipData, LoginSessionInfo, PaymentEntry } from '@/types'
+import { Camera, Loader2, Save, User, Tv, Crown, Monitor, Globe, ShieldCheck, ShieldAlert, Trash2, Smartphone, Receipt, ChevronDown } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import { formatDistanceToNow } from 'date-fns'
+import { formatTimeAgo } from '@/lib/format'
+
+const planBadgeVariants: Record<string, 'outline' | 'secondary' | 'default'> = {
+  free: 'outline',
+  bronze: 'secondary',
+  silver: 'secondary',
+  gold: 'default',
+}
 
 export function SettingsPage() {
   const { fetchSession } = useAuthStore()
@@ -44,6 +55,10 @@ export function SettingsPage() {
   const [sessions, setSessions] = useState<LoginSessionInfo[]>([])
   const [sessionsLoading, setSessionsLoading] = useState(true)
   const [revokingId, setRevokingId] = useState<string | null>(null)
+
+  const [showPayments, setShowPayments] = useState(false)
+  const [payments, setPayments] = useState<PaymentEntry[]>([])
+  const { navigate } = useRouterStore()
 
   const fetchProfile = useCallback(async () => {
     setLoading(true)
@@ -86,8 +101,11 @@ export function SettingsPage() {
   useEffect(() => {
     if (!profile) return
     fetchSessions()
-    fetch('/api/memberships').then(r => r.json()).then(d => {
-      if (d.data) setMembershipData(d.data)
+    subscriptionService.getMembership().then(res => {
+      if (res.data) {
+        setMembershipData(res.data)
+        setPayments(res.data.payments)
+      }
     }).catch(() => {})
   }, [profile, fetchSessions])
 
@@ -447,7 +465,103 @@ export function SettingsPage() {
               <CardDescription>Manage your subscription plan and billing</CardDescription>
             </CardHeader>
             <CardContent>
-              <p>{membershipData ? `Plan: ${String(membershipData.currentPlan?.name ?? 'none')}` : 'Loading...'}</p>
+              {membershipData ? (
+                <div className="space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-muted">
+                        <Crown className="w-5 h-5 text-amber-500" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold">{membershipData.currentPlan?.displayName}</span>
+                          <Badge variant={planBadgeVariants[membershipData.currentPlan?.name || 'free'] || 'outline'} className="text-xs">
+                            {(membershipData.currentPlan?.name || 'free').toUpperCase()}
+                          </Badge>
+                        </div>
+                        {membershipData.membership ? (
+                          <p className="text-sm text-muted-foreground">
+                            Active since {formatTimeAgo(membershipData.membership.startedAt)}
+                            {membershipData.membership.expiresAt && (
+                              <> · Expires {new Date(membershipData.membership.expiresAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</>
+                            )}
+                          </p>
+                        ) : (
+                          <p className="text-sm text-muted-foreground">No active paid membership</p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col items-end gap-2">
+                      {membershipData.currentPlan?.name !== 'free' && membershipData.membership?.expiresAt && (
+                        <div className="text-right">
+                          <p className="text-xs text-muted-foreground">Renewal Date</p>
+                          <p className="text-sm font-medium">
+                            {new Date(membershipData.membership.expiresAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+                          </p>
+                        </div>
+                      )}
+                      <Button variant="outline" size="sm" onClick={() => navigate({ name: 'pricing' })}>
+                        {membershipData.currentPlan?.name === 'free' ? 'Upgrade Plan' : 'Manage Plan'}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Payment History Toggle */}
+                  {membershipData.paymentsTotal > 0 && (
+                    <div className="mt-4 border-t pt-4">
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-between"
+                        onClick={() => setShowPayments(!showPayments)}
+                      >
+                        <span className="flex items-center gap-2">
+                          <Receipt className="w-4 h-4" />
+                          Payment History ({membershipData.paymentsTotal})
+                        </span>
+                        <ChevronDown className={cn('w-4 h-4 transition-transform', showPayments && 'rotate-180')} />
+                      </Button>
+                    </div>
+                  )}
+
+                  {/* Payment History List */}
+                  {showPayments && payments.length > 0 && (
+                    <div className="space-y-2 max-h-64 overflow-y-auto mt-2">
+                      {payments.map((p) => (
+                        <Card key={p.id} className="p-3 bg-muted/30">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="p-1.5 rounded-md bg-background">
+                                <Receipt className="w-4 h-4 text-muted-foreground" />
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium capitalize">{p.planId} Plan</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {p.paidAt ? formatTimeAgo(p.paidAt) : formatTimeAgo(p.createdAt)}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-sm font-semibold">₹{Math.round(p.amount)}</p>
+                              <Badge
+                                variant={p.status === 'completed' ? 'outline' : 'destructive'}
+                                className="text-xs px-1.5 py-0"
+                              >
+                                {p.status}
+                              </Badge>
+                            </div>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Loading subscription details...
+                </div>
+              )}
             </CardContent>
           </Card>
 

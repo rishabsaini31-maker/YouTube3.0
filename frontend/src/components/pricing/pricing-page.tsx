@@ -303,109 +303,67 @@ export function PricingPage() {
         })}
       </div>
 
-      {/* Membership & Payment History */}
-      {isAuthenticated && membership && (
-        <>
-          <Separator className="mb-8" />
-
-          <div className="max-w-2xl mx-auto">
-            {/* Current Membership Info */}
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle className="text-base flex items-center gap-2">
-                  <CreditCard className="w-4 h-4" />
-                  Your Membership
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-muted">
-                      <Crown className="w-5 h-5 text-amber-500" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold">{membership.currentPlan.displayName}</span>
-                        <Badge variant={planBadgeVariants[currentPlanId] || 'outline'} className="text-xs">
-                          {currentPlanId.toUpperCase()}
-                        </Badge>
-                      </div>
-                      {membership.membership ? (
-                        <p className="text-sm text-muted-foreground">
-                          Active since {formatTimeAgo(membership.membership.startedAt)}
-                          {membership.membership.expiresAt && (
-                            <> · Expires {new Date(membership.membership.expiresAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</>
-                          )}
-                        </p>
-                      ) : (
-                        <p className="text-sm text-muted-foreground">No active paid membership</p>
-                      )}
-                    </div>
-                  </div>
-
-                  {currentPlanId !== 'free' && membership.membership?.expiresAt && (
-                    <div className="text-right">
-                      <p className="text-xs text-muted-foreground">Renewal Date</p>
-                      <p className="text-sm font-medium">
-                        {new Date(membership.membership.expiresAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Payment History Toggle */}
-            {membership.paymentsTotal > 0 && (
-              <div className="mb-4">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-between"
-                  onClick={() => setShowPayments(!showPayments)}
-                >
-                  <span className="flex items-center gap-2">
-                    <Receipt className="w-4 h-4" />
-                    Payment History ({membership.paymentsTotal})
-                  </span>
-                  <ChevronDown className={cn('w-4 h-4 transition-transform', showPayments && 'rotate-180')} />
-                </Button>
-              </div>
-            )}
-
-            {/* Payment History List */}
-            {showPayments && (
-              <div className="space-y-2 max-h-96 overflow-y-auto">
-                {payments.map((p) => (
-                  <Card key={p.id} className="p-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="p-1.5 rounded-md bg-muted">
-                          <Receipt className="w-4 h-4 text-muted-foreground" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium capitalize">{p.planId} Plan</p>
-                          <p className="text-xs text-muted-foreground">
-                            {p.paidAt ? formatTimeAgo(p.paidAt) : formatTimeAgo(p.createdAt)}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-semibold">₹{Math.round(p.amount)}</p>
-                        <Badge
-                          variant={p.status === 'completed' ? 'outline' : 'destructive'}
-                          className="text-xs px-1.5 py-0"
-                        >
-                          {p.status}
-                        </Badge>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
-        </>
-      )}
+      {/* Comparison Table */}
+      <div className="mt-16 max-w-4xl mx-auto hidden md:block">
+        <h2 className="text-2xl font-bold text-center mb-8">Compare Plans</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="text-xs uppercase bg-muted/50 border-b">
+              <tr>
+                <th className="px-6 py-4 font-semibold w-1/3">Features</th>
+                <th className="px-6 py-4 font-semibold text-center">Free</th>
+                <th className="px-6 py-4 font-semibold text-center text-amber-500">Bronze</th>
+                <th className="px-6 py-4 font-semibold text-center text-slate-400">Silver</th>
+                <th className="px-6 py-4 font-semibold text-center text-amber-500">Gold</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              <tr className="hover:bg-muted/30">
+                <td className="px-6 py-4 font-medium">Video Downloads</td>
+                <td className="px-6 py-4 text-center">1 / day</td>
+                <td className="px-6 py-4 text-center">5 / week</td>
+                <td className="px-6 py-4 text-center">20 / month</td>
+                <td className="px-6 py-4 text-center font-semibold">Unlimited</td>
+              </tr>
+              <tr className="hover:bg-muted/30">
+                <td className="px-6 py-4 font-medium">HD Streaming</td>
+                <td className="px-6 py-4 text-center text-muted-foreground"><Check className="w-4 h-4 mx-auto opacity-50" /></td>
+                <td className="px-6 py-4 text-center text-emerald-500"><Check className="w-4 h-4 mx-auto" /></td>
+                <td className="px-6 py-4 text-center text-emerald-500"><Check className="w-4 h-4 mx-auto" /></td>
+                <td className="px-6 py-4 text-center text-emerald-500"><Check className="w-4 h-4 mx-auto" /></td>
+              </tr>
+              <tr className="hover:bg-muted/30">
+                <td className="px-6 py-4 font-medium">Ad-Free Experience</td>
+                <td className="px-6 py-4 text-center text-muted-foreground">-</td>
+                <td className="px-6 py-4 text-center text-emerald-500"><Check className="w-4 h-4 mx-auto" /></td>
+                <td className="px-6 py-4 text-center text-emerald-500"><Check className="w-4 h-4 mx-auto" /></td>
+                <td className="px-6 py-4 text-center text-emerald-500"><Check className="w-4 h-4 mx-auto" /></td>
+              </tr>
+              <tr className="hover:bg-muted/30">
+                <td className="px-6 py-4 font-medium">Premium Content Access</td>
+                <td className="px-6 py-4 text-center text-muted-foreground">-</td>
+                <td className="px-6 py-4 text-center text-muted-foreground">-</td>
+                <td className="px-6 py-4 text-center text-emerald-500"><Check className="w-4 h-4 mx-auto" /></td>
+                <td className="px-6 py-4 text-center text-emerald-500"><Check className="w-4 h-4 mx-auto" /></td>
+              </tr>
+              <tr className="hover:bg-muted/30">
+                <td className="px-6 py-4 font-medium">Early Access to Videos</td>
+                <td className="px-6 py-4 text-center text-muted-foreground">-</td>
+                <td className="px-6 py-4 text-center text-muted-foreground">-</td>
+                <td className="px-6 py-4 text-center text-muted-foreground">-</td>
+                <td className="px-6 py-4 text-center text-emerald-500"><Check className="w-4 h-4 mx-auto" /></td>
+              </tr>
+              <tr className="hover:bg-muted/30">
+                <td className="px-6 py-4 font-medium">Priority Support</td>
+                <td className="px-6 py-4 text-center text-muted-foreground">-</td>
+                <td className="px-6 py-4 text-center text-muted-foreground">-</td>
+                <td className="px-6 py-4 text-center text-muted-foreground">-</td>
+                <td className="px-6 py-4 text-center text-emerald-500"><Check className="w-4 h-4 mx-auto" /></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       {/* Test Mode Notice */}
       <div className="mt-8 text-center">

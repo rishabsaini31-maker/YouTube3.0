@@ -95,6 +95,11 @@ export const POST = async (req: Request, res: Response) => {
         where: { id: payment.profileId },
         data: { planId: plan.name },
       })
+
+      // Simulate sending a confirmation email/invoice
+      console.log(`[Email Service - Simulated] Sent payment confirmation and invoice to Profile ID ${payment.profileId}`)
+      console.log(`[Email Service - Simulated] Details: Plan: ${plan.displayName}, Amount: ₹${payment.amount}, Order: ${razorpayOrderId}`)
+
     } else {
       await db.payment.update({
         where: { id: payment.id },
