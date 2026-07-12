@@ -154,7 +154,8 @@ export function VideoPlayer({
     if (videoUrl && (videoUrl.startsWith('http://') || videoUrl.startsWith('https://'))) {
       return videoUrl
     }
-    return `/api/videos/stream/${videoId}`
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
+    return `${baseUrl}/api/videos/stream/${videoId}`
   }, [videoId, videoUrl])
 
   // ─── Video element effects ────────────────────────────────
