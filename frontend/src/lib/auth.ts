@@ -37,7 +37,7 @@ export const authOptions: NextAuthOptions = {
           }
         } catch (error) {
           console.error('Auth authorize error:', error)
-          return null
+          throw new Error((error as Error)?.message || 'Authentication service unavailable')
         }
       },
     }),
@@ -50,32 +50,41 @@ export const authOptions: NextAuthOptions = {
     signIn: '/',
   },
   callbacks: {
-  async jwt({ token, user }) {
-    if (user) {
-      try {
-        const profile = await db.profile.findUnique({
-          where: { userId: user.id! },
-          include: { channel: true },
-        })
-        if (profile) {
-          token.profileId = profile.id
-          token.username = profile.username
-          token.avatarUrl = profile.avatarUrl
-          token.channelId = profile.channel?.id
-          token.channelHandle = profile.channel?.handle
-        }
-      } catch (error) {
-        console.error('JWT callback error:', error)
+    async signIn({ user, account, profile, email, credentials }) {
+      if (!user) {
+        console.log('Sign in failed: no user returned from authorize')
+        return false
       }
-    }
-    return token
-  },
-  async session({ session, token }) {
-    if (session.user && token) {
-      session.user.id = token.sub!
-      session.user.image = (token.avatarUrl as string) || null
-    }
-    return session
+      console.log('Sign in successful for:', user.email)
+      return true
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        try {
+          const profile = await db.profile.findUnique({
+            where: { userId: user.id! },
+            include: { channel: true },
+          })
+          if (profile) {
+            token.profileId = profile.id
+            token.username = profile.username
+            token.avatarUrl = profile.avatarUrl
+            token.channelId = profile.channel?.id
+            token.channelHandle = profile.channel?.handle
+          }
+        } catch (error) {
+          console.error('JWT callback error:', error)
+        }
+      }
+      return token
+    },
+    async session({ session, token }) {
+      if (session.user && token) {
+        session.user.id = token.sub!
+        session.user.image = (token.avatarUrl as string) || null
+      }
+      return session
+    },
   },
   events: {
     async signOut() {
@@ -96,7 +105,6 @@ export const authOptions: NextAuthOptions = {
         console.error('Signout cleanup error:', error)
       }
     },
-  },
   },
   secret: process.env.NEXTAUTH_SECRET || 'viewtube-dev-secret-change-in-production',
 }
