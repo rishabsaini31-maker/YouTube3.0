@@ -152,8 +152,8 @@ export function ChannelPage() {
       )
 
       toast.success(newSubscribed ? 'Subscribed!' : 'Unsubscribed')
-    } catch {
-      toast.error('Failed to update subscription')
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to update subscription')
     } finally {
       setIsSubscribing(false)
     }

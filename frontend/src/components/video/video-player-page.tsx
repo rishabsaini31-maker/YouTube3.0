@@ -107,8 +107,8 @@ export function VideoPlayerPage() {
       const res = await subscriptionService.toggleSubscribe(video.channel.id)
       setIsSubscribed(res.data?.subscribed || false)
       if (res.data) setSubscriberCount(res.data.subscriberCount)
-    } catch {
-      toast.error('Failed to update subscription')
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to update subscription')
     }
   }
 
