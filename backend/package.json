@@ -21,7 +21,8 @@
     "express": "^5.2.1",
     "jose": "^6.2.3",
     "multer": "^2.2.0",
-    "next-auth": "^4.24.14"
+    "next-auth": "^4.24.14",
+    "node-fetch": "^2.7.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
