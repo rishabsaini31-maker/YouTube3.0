@@ -79,6 +79,7 @@ const QUALITY_OPTIONS = ['Auto', '1080p', '720p', '480p', '360p'] as const
 // ─── Component ───────────────────────────────────────────────────
 export function VideoPlayer({
   videoId,
+  videoUrl,
   thumbnailUrl,
   onEnded,
   onRequestNext,
