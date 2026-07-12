@@ -1,29 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { hashPassword, verifyPassword } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { email, password } = body
+    const { email } = body
 
-    if (!email || !password) {
-      return NextResponse.json({ error: 'Email and password are required' }, { status: 400 })
+    if (!email) {
+      return NextResponse.json({ error: 'Email is required' }, { status: 400 })
     }
 
     const profile = await db.profile.findUnique({
       where: { email: email.toLowerCase() },
-      select: { id: true, email: true, name: true, username: true, passwordHash: true },
+      select: { id: true, email: true, name: true, username: true },
     })
 
     if (!profile) {
       return NextResponse.json({ error: 'User not found', step: 'profile_lookup' }, { status: 404 })
-    }
-
-    const isValid = await verifyPassword(password, profile.id)
-
-    if (!isValid) {
-      return NextResponse.json({ error: 'Invalid password', step: 'password_check' }, { status: 401 })
     }
 
     return NextResponse.json({

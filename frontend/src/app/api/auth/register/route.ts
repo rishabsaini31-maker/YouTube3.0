@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { hashPassword } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   try {
@@ -55,8 +54,6 @@ export async function POST(request: NextRequest) {
         email: email.toLowerCase(),
       },
     })
-
-    await hashPassword(password, profile.id)
 
     const handle = username.toLowerCase()
 
