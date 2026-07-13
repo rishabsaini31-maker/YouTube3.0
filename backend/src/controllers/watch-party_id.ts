@@ -1,18 +1,16 @@
 import { Request, Response } from 'express';
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 
 export const GET = async (req: Request, res: Response) => {
   try {
-    const { id: roomId } = req.params
+    const roomId = req.params.id as string
 
     const session = { user: (req as any).user };
     if (!session?.user?.id) {
       return res.status(401).json({ error: 'Authentication required' })
     }
 
-    const room = await db.watchPartyRoom.findUnique({
+    const roomData = await db.watchPartyRoom.findUnique({
       where: { roomId },
       include: {
         host: {
@@ -32,9 +30,11 @@ export const GET = async (req: Request, res: Response) => {
       },
     })
 
-    if (!room) {
+    if (!roomData) {
       return res.status(404).json({ error: 'Room not found' })
     }
+
+    const room = roomData as any
 
     return res.status(200).json({
       data: {
@@ -44,7 +44,7 @@ export const GET = async (req: Request, res: Response) => {
         status: room.status,
         host: room.host,
         video: room.video,
-        participants: room.participants.map((p) => ({
+        participants: room.participants.map((p: any) => ({
           id: p.id,
           profileId: p.profileId,
           role: p.role,
@@ -65,7 +65,7 @@ export const GET = async (req: Request, res: Response) => {
 
 export const DELETE = async (req: Request, res: Response) => {
   try {
-    const { id: roomId } = req.params
+    const roomId = req.params.id as string
 
     const session = { user: (req as any).user };
     if (!session?.user?.id) {
