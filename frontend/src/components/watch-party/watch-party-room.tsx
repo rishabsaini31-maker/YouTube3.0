@@ -99,7 +99,7 @@ export function WatchPartyRoomView({ roomId }: WatchPartyRoomViewProps) {
 
   // Handle host-specific events - update role when joining via socket
   useEffect(() => {
-    if (roomData?.hostId === user?.profileId && socket?.current) {
+    if (roomData?.hostId === user?.profileId && socket?.current && user) {
       // Emit join as host role
       socket.current.emit('wp:join', {
         roomId,
@@ -168,12 +168,12 @@ export function WatchPartyRoomView({ roomId }: WatchPartyRoomViewProps) {
         <ErrorState
           title="Room not found"
           message="This watch party may have ended or doesn't exist."
-          action={
-            <Button onClick={() => navigate({ name: 'watch-party' })}>
-              Browse Watch Parties
-            </Button>
-          }
         />
+        <div className="mt-4 flex justify-center">
+          <Button onClick={() => navigate({ name: 'watch-party' })}>
+            Browse Watch Parties
+          </Button>
+        </div>
       </div>
     )
   }
@@ -277,7 +277,7 @@ export function WatchPartyRoomView({ roomId }: WatchPartyRoomViewProps) {
             roomId={roomId}
             emit={emit}
             videoId={store.videoId || roomData.videoId}
-            videoUrl={roomData.video?.videoUrl}
+            videoUrl={(roomData.video as any)?.videoUrl}
             isHost={store.isHost}
           />
 
