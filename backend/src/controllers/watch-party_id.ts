@@ -3,10 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 
-export async function GET(
-  _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export const GET = async (req: Request, res: Response) => {
   try {
     const { id: roomId } = req.params
 
@@ -62,14 +59,11 @@ export async function GET(
     })
   } catch (error) {
     console.error('Get watch party room error:', error)
-    return res.json({ error: 'Failed to fetch watch party room' })
+    return res.status(500).json({ error: 'Failed to fetch watch party room' })
   }
 }
 
-export async function DELETE(
-  _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export const DELETE = async (req: Request, res: Response) => {
   try {
     const { id: roomId } = req.params
 
@@ -108,6 +102,6 @@ export async function DELETE(
     })
   } catch (error) {
     console.error('Delete watch party room error:', error)
-    return res.json({ error: 'Failed to end watch party room' })
+    return res.status(500).json({ error: 'Failed to end watch party room' })
   }
 }
