@@ -69,8 +69,8 @@ export function UploadModal() {
       toast.error('Unsupported video format. Use MP4, WebM, or OGG.')
       return
     }
-    if (file.size > 500 * 1024 * 1024) {
-      toast.error('Video must be under 500MB.')
+    if (file.size > 50 * 1024 * 1024) {
+      toast.error('Video must be under 50MB.')
       return
     }
     setVideoFile(file)
@@ -166,7 +166,7 @@ export function UploadModal() {
                 <div className="text-center">
                   <p className="text-sm font-medium">Select a video file to upload</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    MP4, WebM, or OGG up to 500MB
+                    MP4, WebM, or OGG up to 50MB
                   </p>
                 </div>
                 <Button variant="outline" size="sm" type="button">
