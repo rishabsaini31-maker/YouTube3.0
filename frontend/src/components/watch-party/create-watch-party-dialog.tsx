@@ -38,7 +38,7 @@ export function CreateWatchPartyDialog({ onCreated, onClose }: CreateWatchPartyD
 
   const loadVideos = async () => {
     try {
-      const res = await yourVideosService.getYourVideos({ page: '1', pageSize: '50' })
+      const res = await yourVideosService.getYourVideos(1, 50)
       const data = res as unknown as { data: VideoWithChannel[] }
       setVideos(data.data || [])
     } catch {
