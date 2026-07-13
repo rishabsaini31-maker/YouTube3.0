@@ -277,6 +277,7 @@ export function WatchPartyRoomView({ roomId }: WatchPartyRoomViewProps) {
             roomId={roomId}
             emit={emit}
             videoId={store.videoId || roomData.videoId}
+            videoUrl={roomData.video?.videoUrl}
             isHost={store.isHost}
           />
 

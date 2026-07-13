@@ -20,6 +20,7 @@ interface SyncedVideoPlayerProps {
   roomId: string
   emit: (event: string, data?: unknown) => void
   videoId: string
+  videoUrl?: string
   isHost: boolean
 }
 
@@ -32,7 +33,7 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`
 }
 
-export function SyncedVideoPlayer({ roomId, emit, videoId, isHost }: SyncedVideoPlayerProps) {
+export function SyncedVideoPlayer({ roomId, emit, videoId, videoUrl, isHost }: SyncedVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const seekTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -52,7 +53,9 @@ export function SyncedVideoPlayer({ roomId, emit, videoId, isHost }: SyncedVideo
   const controlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
-  const videoSrc = `${baseUrl}/api/videos/stream/${videoId}`
+  const videoSrc = videoUrl && (videoUrl.startsWith('http://') || videoUrl.startsWith('https://'))
+    ? videoUrl 
+    : `${baseUrl}/api/videos/stream/${videoId}`
 
   // Sync video element with store state (for non-host)
   useEffect(() => {
