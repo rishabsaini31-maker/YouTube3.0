@@ -39,6 +39,9 @@ export function WatchPartyRoomView({ roomId }: WatchPartyRoomViewProps) {
   const [copied, setCopied] = useState(false)
   const [isLeaving, setIsLeaving] = useState(false)
 
+  const setIsHost = store.setIsHost
+  const setMessages = store.setMessages
+
   // Fetch room data from API
   const fetchRoom = useCallback(async () => {
     try {
@@ -47,7 +50,7 @@ export function WatchPartyRoomView({ roomId }: WatchPartyRoomViewProps) {
         setRoomData(res.data)
         // If user is the host, mark as host
         if (res.data.hostId === user?.profileId) {
-          store.setIsHost(true)
+          setIsHost(true)
         }
       }
     } catch (err) {
@@ -55,7 +58,7 @@ export function WatchPartyRoomView({ roomId }: WatchPartyRoomViewProps) {
     } finally {
       setIsLoading(false)
     }
-  }, [roomId, user?.profileId, store])
+  }, [roomId, user?.profileId, setIsHost])
 
   // Fetch initial messages
   const fetchMessages = useCallback(async () => {
@@ -63,7 +66,7 @@ export function WatchPartyRoomView({ roomId }: WatchPartyRoomViewProps) {
       const res = await watchPartyService.getMessages(roomId)
       const msgs = (res as unknown as { data: WatchPartyMessage[]; hasMore: boolean }).data || []
       const hasMore = (res as unknown as { data: WatchPartyMessage[]; hasMore: boolean }).hasMore ?? false
-      store.setMessages(
+      setMessages(
         msgs.map((m) => ({
           id: m.id,
           roomId: m.roomId,
@@ -79,7 +82,7 @@ export function WatchPartyRoomView({ roomId }: WatchPartyRoomViewProps) {
     } catch {
       // Messages might be empty, that's ok
     }
-  }, [roomId, store])
+  }, [roomId, setMessages])
 
   // Join room via API
   const joinRoom = useCallback(async () => {
