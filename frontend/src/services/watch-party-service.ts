@@ -19,4 +19,7 @@ export const watchPartyService = {
 
   joinRoom: (roomId: string, profileId: string) =>
     api.post<ApiResponse<WatchPartyRoom>>(`/api/watch-party/${roomId}/join`, { profileId }),
+
+  sendMessage: (roomId: string, content: string) =>
+    api.post<ApiResponse<WatchPartyMessage>>(`/api/watch-party/${roomId}/messages`, { content }),
 }

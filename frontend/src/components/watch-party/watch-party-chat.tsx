@@ -50,10 +50,27 @@ export function WatchPartyChat({ roomId, emit }: WatchPartyChatProps) {
     setShowScrollDown(!isNearBottom)
   }
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     const content = input.trim()
     if (!content || !user) return
 
+    // Optimistically add to store
+    const optimisticId = `optimistic_${Date.now()}`
+    addMessage({
+      id: optimisticId,
+      roomId,
+      profileId: user.profileId,
+      username: user.username,
+      avatarUrl: user.avatarUrl,
+      content,
+      type: 'text',
+      createdAt: new Date().toISOString(),
+    })
+    
+    setInput('')
+    scrollToBottom()
+
+    // Emit via socket for instant broadcast
     emit('wp:chat-message', {
       content,
       profileId: user.profileId,
@@ -61,10 +78,13 @@ export function WatchPartyChat({ roomId, emit }: WatchPartyChatProps) {
       avatarUrl: user.avatarUrl,
     })
 
-    // Optimistically add to store (will be replaced by socket echo)
-    // Actually the server broadcasts back to all including sender, so we don't need to add here
-
-    setInput('')
+    try {
+      // Save to database
+      const { watchPartyService } = await import('@/services/watch-party-service')
+      await watchPartyService.sendMessage(roomId, content)
+    } catch (err) {
+      console.error('Failed to save message:', err)
+    }
   }
 
   return (
