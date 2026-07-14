@@ -8,7 +8,7 @@ export const PUT = async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Authentication required' });
     }
 
-    const { id } = req.params;
+    const id = req.params.id as string;
     const body = req.body;
     const { action } = body;
 
