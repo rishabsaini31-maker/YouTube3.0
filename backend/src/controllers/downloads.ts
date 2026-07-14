@@ -139,7 +139,7 @@ export const GET = async (req: Request, res: Response) => {
     })
   } catch (error) {
     console.error('Downloads GET error:', error)
-    return res.json({ error: 'Failed to fetch downloads' })
+    return res.status(500).json({ error: 'Failed to fetch downloads' })
   }
 }
 

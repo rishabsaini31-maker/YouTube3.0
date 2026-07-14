@@ -59,12 +59,18 @@ export function DownloadsPage() {
 
     try {
       const res = await downloadService.getDownloads(pageNum, 20)
-      if (append) {
-        setDownloads((prev) => [...prev, ...res.data])
-      } else {
-        setDownloads(res.data)
+      
+      // If the API returned a 200 but has an error field (malformed catch block response)
+      if ('error' in res) {
+        throw new Error((res as any).error)
       }
-      setLimits(res.limits)
+
+      if (append) {
+        setDownloads((prev) => [...(prev || []), ...(res.data || [])])
+      } else {
+        setDownloads(res.data || [])
+      }
+      setLimits(res.limits || null)
       setHasMore(res.hasMore)
       setTotal(res.total)
       setPage(pageNum)
