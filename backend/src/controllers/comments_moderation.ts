@@ -20,7 +20,7 @@ export const GET = async (req: Request, res: Response) => {
     const skip = (page - 1) * pageSize;
 
     const whereClause = {
-      video: { profileId: profile.id }, // Video belongs to current user
+      video: { channel: { profileId: profile.id } }, // Video belongs to current user's channel
       OR: [
         { isSpam: true },
         { isHidden: true },

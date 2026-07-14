@@ -23,7 +23,7 @@ export const PUT = async (req: Request, res: Response) => {
 
     const comment = await db.comment.findUnique({
       where: { id },
-      include: { video: true },
+      include: { video: { include: { channel: true } } },
     });
 
     if (!comment) {
@@ -31,7 +31,7 @@ export const PUT = async (req: Request, res: Response) => {
     }
 
     // Ensure the user owns the video the comment is posted on
-    if (comment.video.profileId !== profile.id) {
+    if (comment.video.channel.profileId !== profile.id) {
       return res.status(403).json({ error: 'You do not have permission to moderate this comment' });
     }
 
