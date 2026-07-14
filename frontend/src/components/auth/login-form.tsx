@@ -27,30 +27,33 @@ export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const { closeAuthModals, openRegister, fetchSession, setPendingOtp } = useAuthStore()
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-  })
+    const {
+      register,
+      handleSubmit,
+      setError,
+      formState: { errors },
+    } = useForm<LoginFormData>({
+      resolver: zodResolver(loginSchema),
+    })
 
-  const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true)
-    try {
-      const result = await signIn('credentials', {
-        email: data.email,
-        password: data.password,
-        redirect: false,
-      })
+    const onSubmit = async (data: LoginFormData) => {
+      setIsLoading(true)
+      try {
+        const result = await signIn('credentials', {
+          email: data.email,
+          password: data.password,
+          redirect: false,
+        })
 
-      if (result?.error) {
-        const message = result.error === 'CredentialsSignin'
-          ? 'Invalid email or password'
-          : result.error
-        toast.error(message)
-        return
-      }
+        if (result?.error) {
+          const message = result.error === 'CredentialsSignin'
+            ? 'email or password is incorrect'
+            : result.error
+          
+          setError('root', { message })
+          toast.error(message)
+          return
+        }
 
       await fetchSession()
 
@@ -104,6 +107,12 @@ export function LoginForm() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {errors.root && (
+            <div className="p-3 text-sm font-medium text-destructive-foreground bg-destructive rounded-md text-center">
+              {errors.root.message}
+            </div>
+          )}
+          
           <div className="space-y-2">
             <Label htmlFor="login-email">Email</Label>
             <Input
