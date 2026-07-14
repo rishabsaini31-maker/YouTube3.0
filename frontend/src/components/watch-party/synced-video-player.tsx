@@ -51,6 +51,7 @@ export function SyncedVideoPlayer({ roomId, emit, videoId, videoUrl, isHost }: S
   const [showLoading, setShowLoading] = useState(false)
   const [waiting, setWaiting] = useState(false)
   const controlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const lastSyncTimeRef = useRef<number>(0)
 
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
   const videoSrc = videoUrl && (videoUrl.startsWith('http://') || videoUrl.startsWith('https://'))
@@ -136,8 +137,10 @@ export function SyncedVideoPlayer({ roomId, emit, videoId, videoUrl, isHost }: S
     if (isHost && !isSeeking) {
       store.setPlaybackState({ currentTime: video.currentTime, duration: video.duration })
       // Emit time sync every 2 seconds
-      if (Math.floor(video.currentTime) % 2 === 0) {
+      const now = Date.now()
+      if (now - lastSyncTimeRef.current > 2000) {
         emit('wp:time-update', { currentTime: video.currentTime, duration: video.duration })
+        lastSyncTimeRef.current = now
       }
     }
   }, [isHost, isSeeking, emit, store])

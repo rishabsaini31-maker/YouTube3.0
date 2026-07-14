@@ -166,6 +166,7 @@ model WatchHistory {
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
   video   Video   @relation(fields: [videoId], references: [id], onDelete: Cascade)
 
+  @@unique([profileId, videoId])
   @@index([profileId, watchedAt])
   @@index([videoId])
 }
