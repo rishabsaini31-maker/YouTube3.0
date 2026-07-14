@@ -2,6 +2,8 @@ import { Router } from 'express';
 import * as channelsId from './controllers/channels_id';
 import * as comments from './controllers/comments';
 import * as commentsId from './controllers/comments_id';
+import * as commentsModeration from './controllers/comments_moderation';
+import * as commentsModerationId from './controllers/comments_moderation_id';
 import * as downloads from './controllers/downloads';
 import * as history from './controllers/history';
 import * as likes from './controllers/likes';
@@ -53,6 +55,8 @@ const bindRoute = (controller: any) => {
 // Map routes
 router.all('/channels/:id', bindRoute(channelsId));
 router.all('/comments', bindRoute(comments));
+router.all('/comments/moderation', bindRoute(commentsModeration));
+router.all('/comments/moderation/:id', bindRoute(commentsModerationId));
 router.all('/comments/:id', bindRoute(commentsId));
 router.all('/downloads', bindRoute(downloads));
 router.all('/history', bindRoute(history));
