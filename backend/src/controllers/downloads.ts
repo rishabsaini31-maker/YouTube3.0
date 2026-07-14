@@ -19,9 +19,9 @@ export const GET = async (req: Request, res: Response) => {
     }
 
     // Get the user's plan
-    const plan = await db.plan.findUnique({
+    const plan = profile.planId ? await db.plan.findUnique({
       where: { name: profile.planId },
-    })
+    }) : null;
 
     const downloadLimit = plan?.downloadLimit ?? 1
     const downloadWindow = plan?.downloadWindow ?? 'day'
@@ -176,9 +176,9 @@ export const POST = async (req: Request, res: Response) => {
     }
 
     // Check download limit
-    const plan = await db.plan.findUnique({
+    const plan = profile.planId ? await db.plan.findUnique({
       where: { name: profile.planId },
-    })
+    }) : null;
 
     const downloadLimit = plan?.downloadLimit ?? 1
     const downloadWindow = plan?.downloadWindow ?? 'day'
