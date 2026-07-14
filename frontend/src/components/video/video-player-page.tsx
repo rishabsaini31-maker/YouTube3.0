@@ -5,6 +5,7 @@ import { useRouterStore } from '@/stores/router-store'
 import { useAuthStore } from '@/stores/auth-store'
 import { videoService } from '@/services/video-service'
 import { subscriptionService } from '@/services/subscription-service'
+import { historyService } from '@/services/history-service'
 import { VideoPlayer } from '@/components/video/video-player'
 import { VideoActions } from '@/components/video/video-actions'
 import { SuggestedVideos } from '@/components/video/suggested-videos'
@@ -61,6 +62,9 @@ export function VideoPlayerPage() {
 
       if (user?.profileId) {
         videoService.recordView(videoId, user.profileId).catch(() => {})
+      }
+      if (isAuthenticated) {
+        historyService.record(videoId).catch(() => {})
       }
     } catch {
       setError('Failed to load video')
