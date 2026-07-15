@@ -39,7 +39,9 @@ export function useWatchPartySocket(roomId: string | null) {
   useEffect(() => {
     if (!roomId || !user?.profileId) return
 
-    const socket = io('/?XTransformPort=' + SOCKET_PORT, {
+    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || '/?XTransformPort=' + SOCKET_PORT
+    
+    const socket = io(socketUrl, {
       transports: ['websocket', 'polling'],
       reconnection: true,
       reconnectionAttempts: 10,
