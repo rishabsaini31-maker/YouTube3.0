@@ -24,6 +24,10 @@ export const subscriptionService = {
       },
     })
   },
+
+  async verifyPayment(data: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }): Promise<ApiResponse<{ received: boolean }>> {
+    return api.post<ApiResponse<{ received: boolean }>>('/api/memberships/verify', data)
+  },
 }
 
 export interface CheckoutData {

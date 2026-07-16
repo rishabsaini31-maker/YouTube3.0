@@ -11,7 +11,7 @@ export const POST = async (req: Request, res: Response) => {
     const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET
 
     if (RAZORPAY_KEY_SECRET) {
-      const signature = request.headers.get('x-razorpay-signature')
+      const signature = req.headers['x-razorpay-signature']
       if (!signature) {
         return res.status(400).json({ error: 'Missing signature' })
       }

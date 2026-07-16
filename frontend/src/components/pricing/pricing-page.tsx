@@ -156,7 +156,7 @@ export function PricingPage() {
         },
         handler: async (response: { razorpay_payment_id: string; razorpay_order_id: string; razorpay_signature: string }) => {
           try {
-            await subscriptionService.confirmSimulatedPayment(checkout.orderId)
+            await subscriptionService.verifyPayment(response)
             toast.success(`Subscribed to ${checkout.planDisplayName}!`)
             await fetchMembership()
             const { fetchSession } = useAuthStore.getState()
@@ -172,12 +172,34 @@ export function PricingPage() {
         },
       }
 
-      const rzp = new (window as any).Razorpay(options)
-      rzp.on('payment.failed', () => {
-        toast.error('Payment failed', { description: 'Your payment was not processed. Please try again.' })
-        reject(new Error('Payment failed'))
+      const loadScript = (src: string) => {
+        return new Promise((resolveScript) => {
+          if (document.querySelector(`script[src="${src}"]`)) {
+            resolveScript(true)
+            return
+          }
+          const script = document.createElement('script')
+          script.src = src
+          script.onload = () => resolveScript(true)
+          script.onerror = () => resolveScript(false)
+          document.body.appendChild(script)
+        })
+      }
+
+      loadScript('https://checkout.razorpay.com/v1/checkout.js').then((loaded) => {
+        if (!loaded) {
+          toast.error('Failed to load Razorpay SDK')
+          reject(new Error('SDK load failed'))
+          return
+        }
+
+        const rzp = new (window as any).Razorpay(options)
+        rzp.on('payment.failed', () => {
+          toast.error('Payment failed', { description: 'Your payment was not processed. Please try again.' })
+          reject(new Error('Payment failed'))
+        })
+        rzp.open()
       })
-      rzp.open()
     })
   }
 

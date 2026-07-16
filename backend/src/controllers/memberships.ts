@@ -170,17 +170,18 @@ export const POST = async (req: Request, res: Response) => {
 
     if (isTestMode) {
       // Simulated mode — generate a test order ID
-      // In production with RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET set,
-      // integrate Razorpay SDK here to create a real order
-      orderId = `order_test_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
+      orderId = `order_test_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
     } else {
       // Real Razorpay integration
-      // Install: npm install razorpay
-      // const Razorpay = require('razorpay')
-      // const razorpay = new Razorpay({ key_id: RAZORPAY_KEY_ID, key_secret: RAZORPAY_KEY_SECRET })
-      // const order = await razorpay.orders.create({ amount, currency: 'INR', receipt: `...`, notes: { profileId, planId, planName } })
-      // orderId = order.id
-      return res.status(500).json({ error: 'Razorpay package not installed. Run: npm install razorpay' })
+      const Razorpay = require('razorpay');
+      const razorpay = new Razorpay({ key_id: RAZORPAY_KEY_ID, key_secret: RAZORPAY_KEY_SECRET });
+      const order = await razorpay.orders.create({
+        amount,
+        currency: 'INR',
+        receipt: `receipt_${Date.now()}`,
+        notes: { profileId: profile.id, planId: plan.name }
+      });
+      orderId = order.id;
     }
 
     // Create a pending payment record

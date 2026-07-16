@@ -24,7 +24,8 @@
     "jose": "^6.2.3",
     "multer": "^2.2.0",
     "next-auth": "^4.24.14",
-    "node-fetch": "^2.7.0"
+    "node-fetch": "^2.7.0",
+    "razorpay": "^2.9.8"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
